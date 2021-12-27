@@ -32,6 +32,11 @@ import { onMounted, ref } from "vue";
 import websdk from "easemob-websdk";
 import { appKey } from "../../const/index";
 
+interface LoginFormParams {
+  user: string;
+  pwd: string;
+}
+
 @Options({
   props: {
     msg: String
@@ -57,12 +62,11 @@ export default class Login extends Vue {
       conn.open(opt);
     };
 
-    const username: any = ref("");
-    const password: any = ref("");
+    const username = ref<string>("");
+    const password = ref<string>("");
 
-    const onSubmit: any = (values: any) => {
-      console.log(values, "bale");
-      login(values);
+    const onSubmit = (params: LoginFormParams): void => {
+      login(params);
     };
 
     onMounted(() => {
