@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "babel-plugin-import": "^1.13.3",
     "core-js": "^3.6.5",
     "easemob-websdk": "^4.0.1",
     "vant": "3",
