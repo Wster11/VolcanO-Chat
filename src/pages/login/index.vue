@@ -28,10 +28,8 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { Form, Field, CellGroup, Button } from "vant";
-import { onMounted, ref } from "vue";
-import websdk from "easemob-websdk";
-import { appKey } from "../../const/index";
-
+import { ref } from "vue";
+import { useStore } from "vuex";
 interface LoginFormParams {
   user: string;
   pwd: string;
@@ -50,16 +48,11 @@ interface LoginFormParams {
 })
 export default class Login extends Vue {
   login = setup(() => {
-    let conn: any;
-    const init = () => {
-      conn = new websdk.connection({
-        appKey,
-        isHttpDNS: true
-      });
-    };
+    const store = useStore();
 
     const login = (opt: any) => {
-      conn.open(opt);
+      // 登录服务器
+      store.state.IM.connect.open(opt);
     };
 
     const username = ref<string>("");
@@ -69,9 +62,6 @@ export default class Login extends Vue {
       login(params);
     };
 
-    onMounted(() => {
-      init();
-    });
     return {
       username,
       password,
@@ -82,4 +72,8 @@ export default class Login extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+.loginWrap {
+  padding-top: 120px;
+}
+</style>
