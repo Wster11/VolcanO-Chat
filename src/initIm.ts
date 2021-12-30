@@ -1,5 +1,5 @@
 import websdk, { EasemobChat } from "easemob-websdk";
-import { appKey } from "./const/index";
+import { appKey } from "@/const/index";
 
 const conn: EasemobChat.Connection = new websdk.connection({
   appKey,

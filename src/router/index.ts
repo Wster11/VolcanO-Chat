@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import HelloWorld from "../components/HelloWorld.vue";
-import Login from "../pages/login/index.vue";
+import Home from "@/pages/Home/index.vue";
+import Login from "@/pages/Login/index.vue";
 
 const routes = [
-  { path: "/", component: HelloWorld },
+  { path: "/", component: Home },
   { path: "/login", component: Login }
 ];
 

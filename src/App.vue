@@ -8,6 +8,8 @@ import { RouterView, useRouter, Router } from "vue-router";
 import { onMounted } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
+import { ERROR_CODE } from "@/const/errorCode";
+import { Toast } from "vant";
 
 @Options({
   components: {
@@ -24,6 +26,18 @@ export default class App extends Vue {
         onOpened: () => {
           // 登录成功跳转
           router.push("/");
+        },
+        onError: (e) => {
+          switch (e.message) {
+            case ERROR_CODE.noAuth:
+              router.push("/login");
+              break;
+            case ERROR_CODE.loginFailed:
+              Toast("用户名或密码错误");
+              break;
+            default:
+              break;
+          }
         }
       });
     });
