@@ -1,35 +1,31 @@
 <template>
   <div class="homeWrap">
-    
+    <RouterView />
+    <Tabbar route>
+      <TabbarItem replace to="/chat" icon="chat-o">聊天</TabbarItem>
+      <TabbarItem replace to="/contact" icon="friends-o">联系人</TabbarItem>
+      <TabbarItem replace to="/user" icon="user-o">我的</TabbarItem>
+    </Tabbar>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { useStore } from "vuex";
-import { onMounted } from "vue";
-import { ref } from "vue";
+import { Options, Vue } from "vue-class-component";
+import { RouterView } from "vue-router";
+import { Tabbar, TabbarItem } from "vant";
+
 @Options({
-  props: {
-    msg: String
+  components: {
+    RouterView,
+    Tabbar,
+    TabbarItem
   }
 })
-export default class HelloWorld extends Vue {
-  index = setup(() => {
-    const store = useStore();
-    let FriendList: any = ref([]);
-
-    onMounted(() => {
-      store.state.IM.connect.getRoster().then((res: any) => {
-        FriendList = res.data;
-      });
-    });
-
-    return {
-      FriendList
-    };
-  });
-}
+export default class Home extends Vue {}
 </script>
 
-<style scoped></style>
+<style scoped>
+.homeWrap {
+  padding: 2vw 2vw;
+}
+</style>

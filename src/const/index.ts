@@ -1,3 +1,3 @@
-const appKey: string = "1161210719091872#sttest";
+const appKey: string = "1161210719091872#demo";
 
 export { appKey };

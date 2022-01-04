@@ -42,6 +42,8 @@ import { useStore } from "vuex";
 interface LoginFormParams {
   user: string;
   pwd: string;
+  success?: () => void;
+  error?: () => void;
 }
 
 @Options({
@@ -65,21 +67,27 @@ export default class Login extends Vue {
     const login = (opt: any) => {
       // 登录服务器
       loading.value = true;
-      store.state.IM.connect.open(opt).finally(() => {
-        loading.value = false;
-      });
+      store.state.IM.connect.open(opt);
     };
 
     const onSubmit = (params: LoginFormParams): void => {
-      login(params);
+      login({
+        ...params,
+        success: () => {
+          loading.value = false;
+        },
+        error: () => {
+          loading.value = false;
+        }
+      });
     };
 
     onMounted(() => {
       // 暂时自动登录
-      // login({
-      //   user: "sttest",
-      //   pwd: "sttest"
-      // });
+      login({
+        user: "sttest",
+        pwd: "sttest"
+      });
     });
 
     return {
