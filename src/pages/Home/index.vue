@@ -3,7 +3,7 @@
     <RouterView />
     <Tabbar route>
       <TabbarItem replace to="/chat" icon="chat-o">聊天</TabbarItem>
-      <TabbarItem replace to="/contact" icon="friends-o">联系人</TabbarItem>
+      <TabbarItem replace to="/contact" icon="friends-o"> 联系人 </TabbarItem>
       <TabbarItem replace to="/user" icon="user-o">我的</TabbarItem>
     </Tabbar>
   </div>
@@ -24,8 +24,4 @@ import { Tabbar, TabbarItem } from "vant";
 export default class Home extends Vue {}
 </script>
 
-<style scoped>
-.homeWrap {
-  padding: 2vw 2vw;
-}
-</style>
+<style scoped></style>

@@ -32,4 +32,8 @@ export default class Home extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+  .chatWrap{
+    padding: 2vw 2vw;
+  }
+</style>
