@@ -2,6 +2,10 @@
   <div class="chatDetailWrap">
     <NavBar :title="chat.userId" left-arrow @click-left="chat.toChat" />
     <div class="sendMsgWrap">
+      <div class="richMsgWrap">
+        <Icon class="icon" size="20" name="smile-o" />
+        <Icon class="icon" size="20" name="photo-o" />
+      </div>
       <Input @send="chat.sendMsg" />
     </div>
   </div>
@@ -11,11 +15,12 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router, useRoute } from "vue-router";
 import Input from "@/components/input.vue";
-import { NavBar } from "vant";
+import { NavBar, Icon } from "vant";
 @Options({
   components: {
     NavBar,
-    Input
+    Input,
+    Icon
   }
 })
 export default class Contact extends Vue {
@@ -43,9 +48,16 @@ export default class Contact extends Vue {
 <style scoped>
 .sendMsgWrap {
   width: 100%;
-  padding: 2vw 0;
+  padding: 2vw;
   border-top: 1px solid lightgray;
   position: absolute;
   bottom: 1rem;
+}
+.richMsgWrap {
+  padding: 2vw;
+  text-align: left;
+}
+.icon {
+  margin-right: 2vw;
 }
 </style>

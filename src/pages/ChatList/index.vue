@@ -3,7 +3,7 @@
     <NavBar title="Message">
       <template #right>
         <Popover
-          overlay="true"
+          :overlay="true"
           :overlay-style="{ background: 'rgba(0,0,0,0.4)' }"
           placement="bottom-end"
           v-model:show="chat.showPopover"
