@@ -25,6 +25,7 @@ export default class Contact extends Vue {}
 .messageItem {
   font-size: 14px;
   display: inline-block;
+  word-break: break-all;
   background: #f3f3f2;
   border-radius: 10px;
   padding: 7px;
