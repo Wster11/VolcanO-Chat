@@ -27,6 +27,9 @@ export default class App extends Vue {
           // 登录成功跳转
           router.push("/chat");
         },
+        onTextMessage: function (message) {
+          console.log(message, "message");
+        },
         onError: (e) => {
           switch (e.message) {
             case ERROR_CODE.noAuth:

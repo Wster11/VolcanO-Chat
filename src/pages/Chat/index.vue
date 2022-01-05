@@ -1,12 +1,21 @@
 <template>
   <div class="chatDetailWrap">
-    <NavBar :title="chat.userId" left-arrow @click-left="chat.toChat" />
+    <NavBar :title="chat.fromId" left-arrow @click-left="chat.toChat" />
+    <div class="msgWrap">
+      <div
+        v-for="item in chat.chatInfo[chat.fromId]?.messageList"
+        :key="item.id"
+      >
+        <MsgLeft v-if="item.from" />
+        <MsgRight v-else :msg="item.msg" :timestamp="item.time" />
+      </div>
+    </div>
     <div class="sendMsgWrap">
       <div class="richMsgWrap">
         <Icon class="icon" size="20" name="smile-o" />
         <Icon class="icon" size="20" name="photo-o" />
       </div>
-      <Input @send="chat.sendMsg" />
+      <Input ref="ipt" @send="chat.sendMsg" />
     </div>
   </div>
 </template>
@@ -17,12 +26,19 @@ import { useRouter, Router, useRoute } from "vue-router";
 import Input from "@/components/input.vue";
 import { NavBar, Icon } from "vant";
 import { useStore } from "vuex";
-import websdk from "easemob-websdk";
+import { getCurrentInstance } from "vue";
+import websdk, { EasemobChat } from "easemob-websdk";
+import { MSG_TYPE, CHAT_TYPE } from "@/const";
+import MsgLeft from "@/components/messageLeft.vue";
+import MsgRight from "@/components/messageRight.vue";
+
 @Options({
   components: {
     NavBar,
     Input,
-    Icon
+    Icon,
+    MsgLeft,
+    MsgRight
   }
 })
 export default class Contact extends Vue {
@@ -31,34 +47,36 @@ export default class Contact extends Vue {
     const route = useRoute();
     const store = useStore();
     const conn = store.state.IM.connect;
+    const instance = getCurrentInstance();
+    const fromId = route.params.fromId as string;
     const toChat = () => {
       router.push("/chat");
     };
     const sendMsg = (txt: string) => {
       let id = conn.getUniqueId(); // 生成本地消息id
-      console.log(id, "233");
-      let msg = new websdk.message("txt", id);
+      let msg = new websdk.message(MSG_TYPE.txt as EasemobChat.MessageType, id);
       msg.set({
         msg: txt, // 消息内容
-        to: route.params.userId as string,
-        chatType: "singleChat",
+        to: fromId,
+        chatType: CHAT_TYPE.singleChat as EasemobChat.ChatType,
         success: () => {
-          console.log("发送成功");
+          const ipt: any = instance?.refs.ipt;
+          ipt.ipt.clear();
+          store.commit("IM/updateChat", { fromId, message: msg.body });
+          console.log("发送成功", msg);
         },
         fail: () => {
           console.log("发送失败");
         }
       });
-
       conn.send(msg.body);
-
-      console.log(msg, "2323");
     };
 
     return {
       toChat,
-      userId: route.params.userId,
-      sendMsg
+      sendMsg,
+      fromId: fromId,
+      chatInfo: store.state.IM.chat
     };
   });
 }
@@ -70,11 +88,15 @@ export default class Contact extends Vue {
   padding: 2vw;
   border-top: 1px solid lightgray;
   position: absolute;
-  bottom: 1rem;
+  bottom: 1vw;
 }
 .richMsgWrap {
   padding: 2vw;
   text-align: left;
+}
+.msgWrap {
+  padding: 10px;
+  height: calc(100vh - 69px - 15vw);
 }
 .icon {
   margin-right: 2vw;

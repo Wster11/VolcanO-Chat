@@ -29,10 +29,15 @@ export default class Contact extends Vue {
       this.$emit("send", txt.value);
     };
 
+    const clear = () => {
+      txt.value = "";
+    };
+
     return {
       txt,
       handleInput,
-      handleEnter
+      handleEnter,
+      clear
     };
   });
 }
