@@ -45,7 +45,7 @@ export default class Contact extends Vue {
   width: 100%;
   padding: 2vw 0;
   border-top: 1px solid lightgray;
-  position: fixed;
+  position: absolute;
   bottom: 1rem;
 }
 </style>

@@ -1,14 +1,15 @@
 <template>
   <div class="contactWrap">
-    <span>联系人</span>
+    <NavBar title="Contact" />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { NavBar } from "vant";
 @Options({
-  props: {
-    name: String
+  components: {
+    NavBar
   }
 })
 export default class Contact extends Vue {}
