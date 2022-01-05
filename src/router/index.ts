@@ -27,7 +27,7 @@ const routes = [
     name: "chatDetail",
     component: () => import("@/pages/Chat/index.vue")
   },
-  { path: "/login", component: () => import("@/pages/Login/index.vue") }
+  { path: "/login", component: () => import("@/pages/Logins/index.vue") }
 ];
 
 const router = createRouter({

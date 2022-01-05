@@ -16,6 +16,8 @@ import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router, useRoute } from "vue-router";
 import Input from "@/components/input.vue";
 import { NavBar, Icon } from "vant";
+import { useStore } from "vuex";
+import websdk from "easemob-websdk";
 @Options({
   components: {
     NavBar,
@@ -27,13 +29,30 @@ export default class Contact extends Vue {
   chat = setup(() => {
     const router: Router = useRouter();
     const route = useRoute();
+    const store = useStore();
+    const conn = store.state.IM.connect;
     const toChat = () => {
       router.push("/chat");
     };
-
     const sendMsg = (txt: string) => {
-      // 发送消息
-      console.log(txt, "text");
+      let id = conn.getUniqueId(); // 生成本地消息id
+      console.log(id, "233");
+      let msg = new websdk.message("txt", id);
+      msg.set({
+        msg: txt, // 消息内容
+        to: route.params.userId as string,
+        chatType: "singleChat",
+        success: () => {
+          console.log("发送成功");
+        },
+        fail: () => {
+          console.log("发送失败");
+        }
+      });
+
+      conn.send(msg.body);
+
+      console.log(msg, "2323");
     };
 
     return {
