@@ -39,6 +39,7 @@ import { Options, Vue, setup } from "vue-class-component";
 import { Form, Field, CellGroup, Button } from "vant";
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 interface LoginFormParams {
   user: string;
   pwd: string;
@@ -62,6 +63,8 @@ export default class Login extends Vue {
     const store = useStore();
     const username = ref<string>("");
     const password = ref<string>("");
+    const route = useRoute();
+
     let loading = ref<boolean>(false);
 
     const login = (opt: any) => {
@@ -81,12 +84,13 @@ export default class Login extends Vue {
         }
       });
     };
-
     onMounted(() => {
+      console.log(route.query.id, "route");
+      const id = route.query.id;
       // 暂时自动登录
       login({
-        user: "sttest",
-        pwd: "sttest"
+        user: id,
+        pwd: id
       });
     });
 

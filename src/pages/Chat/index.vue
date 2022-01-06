@@ -6,7 +6,7 @@
         v-for="item in chat.chatInfo[chat.fromId]?.messageList"
         :key="item.id"
       >
-        <MsgLeft v-if="item.from" />
+        <MsgLeft v-if="item.from" :msg="item.data" :timestamp="item.time" />
         <MsgRight v-else :msg="item.msg" :timestamp="item.time" />
       </div>
     </div>

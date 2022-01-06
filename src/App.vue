@@ -28,7 +28,8 @@ export default class App extends Vue {
           router.push("/chat");
         },
         onTextMessage: function (message) {
-          console.log(message, "message");
+          const { from } = message;
+          store.commit("IM/updateChat", { fromId: from, message: message });
         },
         onError: (e) => {
           switch (e.message) {

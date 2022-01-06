@@ -1,8 +1,9 @@
 <template>
   <div class="messageItemWrap">
     <div class="messageItem">
-      <div>12313123</div>
+      <div>{{ msg }}</div>
     </div>
+    <div class="time">{{ timestamp }}</div>
   </div>
 </template>
 
@@ -11,7 +12,7 @@ import { Options, Vue } from "vue-class-component";
 @Options({
   props: {
     msg: String,
-    time: String
+    timestamp: Number
   }
 })
 export default class Contact extends Vue {}
@@ -31,5 +32,9 @@ export default class Contact extends Vue {}
   padding: 7px;
   min-width: 100px;
   max-width: 80vw;
+}
+.time {
+  font-size: 12px;
+  color: lightgray;
 }
 </style>
