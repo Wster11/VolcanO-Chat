@@ -18,7 +18,7 @@
             clickable
             :border="false"
             column-num="10"
-            style="width: 240px; paddingbottom: 5px"
+            style="width: 240px; padding-bottom: 5px"
           >
             <GridItem
               v-for="i in chat.emojiLs"
