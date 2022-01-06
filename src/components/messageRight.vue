@@ -3,19 +3,26 @@
     <div class="messageItem">
       <div>{{ msg }}</div>
     </div>
-    <div class="time">{{ timestamp }}</div>
+    <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue, setup } from "vue-class-component";
+import { formatTime } from "@/utils";
 @Options({
   props: {
     msg: String,
     timestamp: Number
   }
 })
-export default class Contact extends Vue {}
+export default class Contact extends Vue {
+  rightMsg = setup(() => {
+    return {
+      formatTime
+    };
+  });
+}
 </script>
 
 <style scoped>

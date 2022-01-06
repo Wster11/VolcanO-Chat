@@ -70,7 +70,8 @@ export default class Login extends Vue {
     const login = (opt: any) => {
       // 登录服务器
       loading.value = true;
-      store.state.IM.connect.open(opt);
+      console.log(store.state.IM.connect.open(opt), 'success')
+      store.state.IM.connect.open(opt)
     };
 
     const onSubmit = (params: LoginFormParams): void => {

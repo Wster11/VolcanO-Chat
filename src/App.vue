@@ -22,15 +22,35 @@ export default class App extends Vue {
     onMounted(() => {
       const store = useStore();
       store.commit("IM/setConnect", conn);
-      conn.listen({
-        onOpened: () => {
-          // 登录成功跳转
+      conn.addEventHandler("CONNECTION", {
+        onConnected: () => {
+          console.log("onConnected");
           router.push("/chat");
-        },
-        onTextMessage: function (message) {
-          const { from } = message;
-          store.commit("IM/updateChat", { fromId: from, message: message });
-        },
+        }
+      });
+
+      conn.addEventHandler("MESSAGE", {
+        onTextMessage: (message) => {
+          store.commit("IM/updateChat", { fromId: message.from, message });
+        }
+      });
+
+      conn.addEventHandler("ERROR", {
+        onError: (e) => {
+          switch (e.message) {
+            case ERROR_CODE.noAuth:
+              router.push("/login");
+              break;
+            case ERROR_CODE.loginFailed:
+              Toast("用户名或密码错误");
+              break;
+            default:
+              break;
+          }
+        }
+      });
+      //3.0 监听事件写法
+      conn.listen({
         onError: (e) => {
           switch (e.message) {
             case ERROR_CODE.noAuth:

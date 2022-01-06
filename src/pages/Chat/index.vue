@@ -6,7 +6,7 @@
         v-for="item in chat.chatInfo[chat.fromId]?.messageList"
         :key="item.id"
       >
-        <MsgLeft v-if="item.from" :msg="item.data" :timestamp="item.time" />
+        <MsgLeft v-if="item.from" :msg="item.msg" :timestamp="item.time" />
         <MsgRight v-else :msg="item.msg" :timestamp="item.time" />
       </div>
     </div>
@@ -29,6 +29,7 @@ import { useStore } from "vuex";
 import { getCurrentInstance } from "vue";
 import websdk, { EasemobChat } from "easemob-websdk";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
+import { ERROR_CODE } from "@/const/errorCode";
 import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
 
@@ -52,24 +53,30 @@ export default class Contact extends Vue {
     const toChat = () => {
       router.push("/chat");
     };
+
     const sendMsg = (txt: string) => {
-      let id = conn.getUniqueId(); // 生成本地消息id
-      let msg = new websdk.message(MSG_TYPE.txt as EasemobChat.MessageType, id);
-      msg.set({
-        msg: txt, // 消息内容
-        to: fromId,
+      let msg = websdk.message.create({
         chatType: CHAT_TYPE.singleChat as EasemobChat.ChatType,
-        success: () => {
+        type: MSG_TYPE.txt as "txt",
+        to: fromId,
+        msg: txt,
+        ext: { extra: "附加消息" } // 发送附加消息
+      });
+
+      conn
+        .send(msg)
+        .then(() => {
+          console.log("发送成功");
           const ipt: any = instance?.refs.ipt;
           ipt.ipt.clear();
-          store.commit("IM/updateChat", { fromId, message: msg.body });
-          console.log("发送成功", msg);
-        },
-        fail: () => {
-          console.log("发送失败");
-        }
-      });
-      conn.send(msg.body);
+          store.commit("IM/updateChat", { fromId, message: msg });
+        })
+        .catch((e: any) => {
+          if (e.message === ERROR_CODE.notLogin) {
+            console.log("未登录");
+          }
+          console.log(e, "发送失败");
+        });
     };
 
     return {
