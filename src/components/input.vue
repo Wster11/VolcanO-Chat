@@ -1,29 +1,30 @@
 <template>
   <div class="inputWrap">
-    <div
+    <contenteditable
       class="input"
-      v-text="ipt.txt"
-      contenteditable="true"
+      tag="div"
+      v-model="ipt.txt"
+      :noHTML="false"
+      :noNL="true"
+      @returned="ipt.handleEnter"
       placeholder="请输入"
-      @keyup.enter="ipt.handleEnter"
-      @input="ipt.handleInput"
-    ></div>
+    />
   </div>
 </template>
 
 <script lang="ts">
+import contenteditable from "vue-contenteditable";
 import { Options, Vue, setup } from "vue-class-component";
 import { ref } from "vue";
 @Options({
-  emits: ["send"]
+  emits: ["send"],
+  components: {
+    contenteditable
+  }
 })
 export default class Contact extends Vue {
   ipt = setup(() => {
     const txt = ref("");
-    const handleInput = ($event: InputEvent) => {
-      const input = $event.target as HTMLDivElement;
-      txt.value = input.innerText;
-    };
 
     const handleEnter = () => {
       this.$emit("send", txt.value);
@@ -35,7 +36,6 @@ export default class Contact extends Vue {
 
     return {
       txt,
-      handleInput,
       handleEnter,
       clear
     };

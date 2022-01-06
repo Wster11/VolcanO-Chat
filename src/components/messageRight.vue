@@ -1,7 +1,7 @@
 <template>
   <div class="messageItemWrap">
     <div class="messageItem">
-      <div>{{ msg }}</div>
+      <div v-html="msg"></div>
     </div>
     <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>

@@ -8837,6 +8837,11 @@ vue-class-component@^8.0.0-0:
   resolved "https://registry.npm.taobao.org/vue-class-component/download/vue-class-component-8.0.0-rc.1.tgz#db692cd97656eb9a08206c03d0b7398cdb1d9420"
   integrity sha1-22ks2XZW65oIIGwD0Lc5jNsdlCA=
 
+vue-contenteditable@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npmmirror.com/vue-contenteditable/download/vue-contenteditable-3.0.4.tgz#963b217045e7c574f89503943a024d486491e865"
+  integrity sha1-ljshcEXnxXT4lQOUOgJNSGSR6GU=
+
 vue-eslint-parser@^7.0.0, vue-eslint-parser@^7.10.0:
   version "7.11.0"
   resolved "https://registry.npmmirror.com/vue-eslint-parser/download/vue-eslint-parser-7.11.0.tgz#214b5dea961007fcffb2ee65b8912307628d0daf"
