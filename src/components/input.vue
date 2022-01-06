@@ -52,7 +52,6 @@ export default class Contact extends Vue {
   width: 100%;
   text-align: left;
   padding-left: 2vw;
-  width: 75vw;
   font-size: 14px;
 }
 div[contenteditable]:empty:not(:focus):before {
