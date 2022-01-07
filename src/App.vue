@@ -32,9 +32,11 @@ export default class App extends Vue {
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
           store.commit("IM/updateChat", { fromId: message.from, message });
+        },
+        onImageMessage: () => {
+          console.log("收到图片消息了啊");
         }
       });
-
       conn.addEventHandler("ERROR", {
         onError: (e) => {
           switch (e.message) {

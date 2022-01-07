@@ -32,7 +32,9 @@
             <Icon class="icon" size="20" name="smile-o" />
           </template>
         </Popover>
-        <Icon class="icon" size="20" name="photo-o" />
+        <Uploader :after-read="chat.afterRead">
+          <Icon class="icon" size="20" name="photo-o" />
+        </Uploader>
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -43,16 +45,15 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router, useRoute } from "vue-router";
 import Input from "@/components/input.vue";
-import { NavBar, Icon, Popover, Grid, GridItem } from "vant";
+import { NavBar, Icon, Popover, Grid, GridItem, Uploader } from "vant";
 import { useStore } from "vuex";
 import { getCurrentInstance, ref } from "vue";
-import websdk from "easemob-websdk";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
-import { ERROR_CODE } from "@/const/errorCode";
 import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
+import { deliverMsg, formatImFile, createMsg } from "@/utils/im";
 
 @Options({
   components: {
@@ -63,7 +64,8 @@ import { scrollToBottom } from "@/utils";
     MsgRight,
     Popover,
     Grid,
-    GridItem
+    GridItem,
+    Uploader
   }
 })
 export default class Contact extends Vue {
@@ -101,7 +103,7 @@ export default class Contact extends Vue {
 
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
-      let msg = websdk.message.create({
+      let msg = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.txt,
         to: fromId,
@@ -111,22 +113,13 @@ export default class Contact extends Vue {
       store.commit("IM/updateChat", { fromId, message: msg });
       const ipt: any = instance?.refs.ipt;
       ipt.ipt.clear();
-      conn
-        .send(msg)
-        .then(() => {
-          console.log("发送成功");
-          scrollToBottom(document.getElementById("msgWrap"));
-        })
-        .catch((e: any) => {
-          if (e.message === ERROR_CODE.notLogin) {
-            console.log("未登录");
-          }
-          console.log(e, "发送失败");
-        });
+      deliverMsg(msg).then(() => {
+        console.log("发送成功");
+        scrollToBottom(document.getElementById("msgWrap"));
+      });
     };
 
     // 点击表情
-
     const sendEmoji = (emoji: string) => {
       emojiShow.value = false;
       const ipt: any = instance?.refs.ipt;
@@ -134,15 +127,29 @@ export default class Contact extends Vue {
       ipt.ipt.mergeTxt(emojiStr);
     };
 
+    const afterRead = (file: any) => {
+      const imgMsg = createMsg({
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.img,
+        to: fromId,
+        file: formatImFile(file.file) as any
+      });
+
+      deliverMsg(imgMsg).then(() => {
+        console.log("发送图片消息成功");
+      });
+    };
+
     return {
-      toChat,
-      sendMsg,
       fromId: fromId,
       emojiShow,
-      selectEmoji: selectEmoji,
       emojiLs: emojiLs,
+      chatInfo: store.state.IM.chat,
+      toChat,
+      sendMsg,
+      selectEmoji: selectEmoji,
       sendEmoji: sendEmoji,
-      chatInfo: store.state.IM.chat
+      afterRead: afterRead
     };
   });
 }
