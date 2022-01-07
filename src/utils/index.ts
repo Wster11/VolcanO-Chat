@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+
 const formatTime = (
   date: string | number | Date | dayjs.Dayjs | null | undefined,
   template: string = "YYYY-MM-DD"
@@ -6,4 +7,10 @@ const formatTime = (
   return dayjs(date).format(template);
 };
 
-export { formatTime };
+const scrollToBottom = (dom: HTMLElement | null) => {
+  dom?.scrollTo({
+    top: dom?.scrollHeight
+  });
+};
+
+export { formatTime, scrollToBottom };

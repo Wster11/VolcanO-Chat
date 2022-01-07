@@ -1,7 +1,7 @@
 <template>
   <div class="chatDetailWrap">
     <NavBar :title="chat.fromId" left-arrow @click-left="chat.toChat" />
-    <div class="msgWrap">
+    <div id="msgWrap">
       <div
         v-for="item in chat.chatInfo[chat.fromId]?.messageList"
         :key="item.id"
@@ -52,6 +52,7 @@ import { ERROR_CODE } from "@/const/errorCode";
 import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
+import { scrollToBottom } from "@/utils";
 
 @Options({
   components: {
@@ -89,6 +90,14 @@ export default class Contact extends Vue {
     const toChat = () => {
       router.push("/chat");
     };
+    // 收到消息滚动到底部
+    conn.addEventHandler("MESSAGE_SCROLL", {
+      onTextMessage: () => {
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+      }
+    });
 
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
@@ -99,15 +108,14 @@ export default class Contact extends Vue {
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息
       });
-
+      store.commit("IM/updateChat", { fromId, message: msg });
+      const ipt: any = instance?.refs.ipt;
+      ipt.ipt.clear();
       conn
         .send(msg)
         .then(() => {
           console.log("发送成功");
-          const ipt: any = instance?.refs.ipt;
-
-          ipt.ipt.clear();
-          store.commit("IM/updateChat", { fromId, message: msg });
+          scrollToBottom(document.getElementById("msgWrap"));
         })
         .catch((e: any) => {
           if (e.message === ERROR_CODE.notLogin) {
@@ -120,7 +128,6 @@ export default class Contact extends Vue {
     // 点击表情
 
     const sendEmoji = (emoji: string) => {
-      console.log(emoji, "23");
       emojiShow.value = false;
       const ipt: any = instance?.refs.ipt;
       const emojiStr = `<img class="emojiItem" src="${emoji}"/>`;
@@ -153,7 +160,7 @@ export default class Contact extends Vue {
   padding: 2vw;
   text-align: left;
 }
-.msgWrap {
+#msgWrap {
   padding: 10px;
   height: calc(100vh - 100px - 15vw);
   overflow: scroll;
