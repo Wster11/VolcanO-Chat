@@ -23,9 +23,9 @@
             <GridItem
               v-for="i in chat.emojiLs"
               :key="i"
-              @click="showPopover = false"
+              @click="chat.sendEmoji(i.url)"
             >
-              <img class="emoji" :src="i" @click="chat.selectEmoji" />
+              <img class="emoji" :src="i.url" @click="chat.selectEmoji" />
             </GridItem>
           </Grid>
           <template #reference>
@@ -75,8 +75,11 @@ export default class Contact extends Vue {
     const fromId = route.params.fromId as string;
     const emojiShow = ref(false);
 
-    const emojiLs = Object.values(emoji.obj).map((item) => {
-      return require(`../../static/emoji/${item}`);
+    const emojiLs = Object.entries(emoji.obj).map((item) => {
+      return {
+        name: item[0],
+        url: `/emoji/${item[1]}`
+      };
     });
 
     const selectEmoji = () => {
@@ -102,6 +105,7 @@ export default class Contact extends Vue {
         .then(() => {
           console.log("发送成功");
           const ipt: any = instance?.refs.ipt;
+
           ipt.ipt.clear();
           store.commit("IM/updateChat", { fromId, message: msg });
         })
@@ -113,6 +117,16 @@ export default class Contact extends Vue {
         });
     };
 
+    // 点击表情
+
+    const sendEmoji = (emoji: string) => {
+      console.log(emoji, "23");
+      emojiShow.value = false;
+      const ipt: any = instance?.refs.ipt;
+      const emojiStr = `<img class="emojiItem" src="${emoji}"/>`;
+      ipt.ipt.mergeTxt(emojiStr);
+    };
+
     return {
       toChat,
       sendMsg,
@@ -120,6 +134,7 @@ export default class Contact extends Vue {
       emojiShow,
       selectEmoji: selectEmoji,
       emojiLs: emojiLs,
+      sendEmoji: sendEmoji,
       chatInfo: store.state.IM.chat
     };
   });

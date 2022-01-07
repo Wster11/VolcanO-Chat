@@ -34,22 +34,26 @@ export default class Contact extends Vue {
       txt.value = "";
     };
 
+    const mergeTxt = (str: string) => {
+      txt.value = `${txt.value}${str}`;
+    };
+
     return {
       txt,
       handleEnter,
-      clear
+      clear,
+      mergeTxt
     };
   });
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .input {
   outline: none;
-  height: 6vw;
-  overflow: scroll;
+  height: 10vw;
+  overflow-y: scroll;
   border-radius: 2vw;
-  width: 100%;
   text-align: left;
   padding-left: 2vw;
   font-size: 14px;

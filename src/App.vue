@@ -76,9 +76,12 @@ export default class App extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  height: 100vh;
 }
 
 body {
   background: #fdfdfd;
 }
+
+@import "./base.css"; /*引入公共样式*/
 </style>
