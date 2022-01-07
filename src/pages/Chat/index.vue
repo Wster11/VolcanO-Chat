@@ -46,7 +46,7 @@ import Input from "@/components/input.vue";
 import { NavBar, Icon, Popover, Grid, GridItem } from "vant";
 import { useStore } from "vuex";
 import { getCurrentInstance, ref } from "vue";
-import websdk, { EasemobChat } from "easemob-websdk";
+import websdk from "easemob-websdk";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
 import { ERROR_CODE } from "@/const/errorCode";
 import MsgLeft from "@/components/messageLeft.vue";
@@ -87,10 +87,11 @@ export default class Contact extends Vue {
       router.push("/chat");
     };
 
+    // 发送文本和表情消息
     const sendMsg = (txt: string) => {
       let msg = websdk.message.create({
-        chatType: CHAT_TYPE.singleChat as EasemobChat.ChatType,
-        type: MSG_TYPE.txt as "txt",
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.txt,
         to: fromId,
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息

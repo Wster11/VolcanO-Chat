@@ -40,6 +40,7 @@ import { Form, Field, CellGroup, Button } from "vant";
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
+
 interface LoginFormParams {
   user: string;
   pwd: string;
@@ -70,8 +71,8 @@ export default class Login extends Vue {
     const login = (opt: any) => {
       // 登录服务器
       loading.value = true;
-      console.log(store.state.IM.connect.open(opt), 'success')
-      store.state.IM.connect.open(opt)
+      console.log(store.state.IM.connect.open(opt), "success");
+      store.state.IM.connect.open(opt);
     };
 
     const onSubmit = (params: LoginFormParams): void => {
