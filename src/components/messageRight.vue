@@ -6,11 +6,7 @@
         <img
           class="imgMsg"
           :src="msg.body.url"
-          @click="
-            rightMsg.ImagePreview({
-              images: [msg.body.url]
-            })
-          "
+          @click="rightMsg.previewImg(idx)"
         />
       </div>
     </div>
@@ -22,19 +18,23 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
 import { MSG_TYPE } from "@/const";
-import { ImagePreview } from "vant";
 @Options({
   props: {
     msg: Object,
-    timestamp: Number
-  }
+    timestamp: Number,
+    idx: Number
+  },
+  emits: ["previewImg"]
 })
-export default class Contact extends Vue {
+export default class MessageRight extends Vue {
   rightMsg = setup(() => {
+    const previewImg = (idx: number) => {
+      this.$emit("previewImg", idx);
+    };
     return {
       formatTime,
       msgType: MSG_TYPE,
-      ImagePreview
+      previewImg
     };
   });
 }
@@ -62,6 +62,6 @@ export default class Contact extends Vue {
 }
 
 .imgMsg {
-  max-width: 100%;
+  max-width: 200px;
 }
 </style>

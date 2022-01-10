@@ -11,8 +11,15 @@
           :idx="idx"
           :msg="item"
           :timestamp="item.time"
+          @previewImg="chat.previewImage"
         />
-        <MsgRight v-else :idx="idx" :msg="item" :timestamp="item.time" />
+        <MsgRight
+          v-else
+          :idx="idx"
+          :msg="item"
+          :timestamp="item.time"
+          @previewImg="chat.previewImage"
+        />
       </div>
     </div>
     <div class="sendMsgWrap">
@@ -50,7 +57,15 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router, useRoute } from "vue-router";
 import Input from "@/components/input.vue";
-import { NavBar, Icon, Popover, Grid, GridItem, Uploader } from "vant";
+import {
+  NavBar,
+  Icon,
+  Popover,
+  Grid,
+  GridItem,
+  Uploader,
+  ImagePreview
+} from "vant";
 import { useStore } from "vuex";
 import { getCurrentInstance, ref } from "vue";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
@@ -59,6 +74,7 @@ import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
 import { deliverMsg, formatImFile, createMsg } from "@/utils/im";
+import { EasemobChat } from "easemob-websdk";
 
 @Options({
   components: {
@@ -82,6 +98,22 @@ export default class Contact extends Vue {
     const instance = getCurrentInstance();
     const fromId = route.params.fromId as string;
     const emojiShow = ref(false);
+
+    const previewImage = (idx: number) => {
+      // TODO: 发送接收消息时push图片url,不要每次都获取
+      const imgMsgList = store.state.IM.chat[fromId]?.messageList
+        .filter((item: EasemobChat.MessageBody) => {
+          return item.type === MSG_TYPE.img;
+        })
+        .map((imgItem: any) => {
+          return imgItem.url || imgItem.body.url;
+        });
+
+      ImagePreview({
+        images: imgMsgList,
+        startPosition: idx
+      });
+    };
 
     const emojiLs = Object.entries(emoji.obj).map((item) => {
       return {
@@ -141,6 +173,7 @@ export default class Contact extends Vue {
       });
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
+        console.log(imgMsg, 'imgMsg')
         store.commit("IM/updateChat", { fromId, message: imgMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
@@ -158,7 +191,8 @@ export default class Contact extends Vue {
       sendMsg,
       selectEmoji: selectEmoji,
       sendEmoji: sendEmoji,
-      afterRead: afterRead
+      afterRead: afterRead,
+      previewImage
     };
   });
 }
@@ -170,7 +204,7 @@ export default class Contact extends Vue {
   padding: 2vw;
   border-top: 1px solid lightgray;
   position: absolute;
-  bottom: 1vw;
+  /* bottom: 1vw; */
 }
 .richMsgWrap {
   padding: 2vw;

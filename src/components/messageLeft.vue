@@ -3,16 +3,7 @@
     <div class="messageItem">
       <div v-if="msg.type === leftMsg.msgType.txt" v-html="msg.msg"></div>
       <div v-else-if="msg.type === leftMsg.msgType.img">
-        <img
-          class="imgMsg"
-          :src="msg.url"
-          @click="
-            leftMsg.ImagePreview({
-              images: [msg.url],
-              startPosition: 1
-            })
-          "
-        />
+        <img class="imgMsg" :src="msg.url" @click="leftMsg.previewImg(idx)" />
       </div>
     </div>
     <div class="time">{{ leftMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
@@ -23,20 +14,24 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
 import { MSG_TYPE } from "@/const";
-import { ImagePreview } from "vant";
 
 @Options({
   props: {
     msg: Object,
-    timestamp: Number
-  }
+    timestamp: Number,
+    idx: Number
+  },
+  emits: ["previewImg"]
 })
-export default class Contact extends Vue {
+export default class MessageLeft extends Vue {
   leftMsg = setup(() => {
+    const previewImg = (idx: number) => {
+      this.$emit("previewImg", idx);
+    };
     return {
       formatTime,
       msgType: MSG_TYPE,
-      ImagePreview
+      previewImg
     };
   });
 }
