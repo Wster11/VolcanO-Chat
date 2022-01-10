@@ -31,7 +31,7 @@ export default class Contact extends Vue {
     };
 
     const clear = () => {
-      txt.value = "";
+      txt.value = " ";
     };
 
     const mergeTxt = (str: string) => {

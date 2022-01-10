@@ -33,8 +33,9 @@ export default class App extends Vue {
         onTextMessage: (message) => {
           store.commit("IM/updateChat", { fromId: message.from, message });
         },
-        onImageMessage: () => {
-          console.log("收到图片消息了啊");
+        onImageMessage: (message) => {
+          store.commit("IM/updateChat", { fromId: message.from, message });
+          console.log("收到图片消息了啊",message);
         }
       });
       conn.addEventHandler("ERROR", {

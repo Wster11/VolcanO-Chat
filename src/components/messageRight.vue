@@ -1,7 +1,18 @@
 <template>
   <div class="messageItemWrap">
     <div class="messageItem">
-      <div v-html="msg"></div>
+      <div v-if="msg.type === rightMsg.msgType.txt" v-html="msg.msg"></div>
+      <div v-else-if="msg.type === rightMsg.msgType.img">
+        <img
+          class="imgMsg"
+          :src="msg.body.url"
+          @click="
+            rightMsg.ImagePreview({
+              images: [msg.body.url]
+            })
+          "
+        />
+      </div>
     </div>
     <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>
@@ -10,16 +21,20 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
+import { MSG_TYPE } from "@/const";
+import { ImagePreview } from "vant";
 @Options({
   props: {
-    msg: String,
+    msg: Object,
     timestamp: Number
   }
 })
 export default class Contact extends Vue {
   rightMsg = setup(() => {
     return {
-      formatTime
+      formatTime,
+      msgType: MSG_TYPE,
+      ImagePreview
     };
   });
 }
@@ -44,5 +59,9 @@ export default class Contact extends Vue {
 .time {
   font-size: 12px;
   color: lightgray;
+}
+
+.imgMsg {
+  max-width: 100%;
 }
 </style>

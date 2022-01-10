@@ -3,11 +3,16 @@
     <NavBar :title="chat.fromId" left-arrow @click-left="chat.toChat" />
     <div id="msgWrap">
       <div
-        v-for="item in chat.chatInfo[chat.fromId]?.messageList"
+        v-for="(item, idx) in chat.chatInfo[chat.fromId]?.messageList"
         :key="item.id"
       >
-        <MsgLeft v-if="item.from" :msg="item.msg" :timestamp="item.time" />
-        <MsgRight v-else :msg="item.msg" :timestamp="item.time" />
+        <MsgLeft
+          v-if="item.from"
+          :idx="idx"
+          :msg="item"
+          :timestamp="item.time"
+        />
+        <MsgRight v-else :idx="idx" :msg="item" :timestamp="item.time" />
       </div>
     </div>
     <div class="sendMsgWrap">
@@ -134,9 +139,13 @@ export default class Contact extends Vue {
         to: fromId,
         file: formatImFile(file.file) as any
       });
-
-      deliverMsg(imgMsg).then(() => {
-        console.log("发送图片消息成功");
+      // 发送图片消息
+      deliverMsg(imgMsg).then((res) => {
+        store.commit("IM/updateChat", { fromId, message: imgMsg });
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+        console.log(res, "发送图片消息成功");
       });
     };
 
