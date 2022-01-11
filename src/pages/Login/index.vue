@@ -109,8 +109,8 @@ export default class Login extends Vue {
 <style scoped lang="less">
 .loginWrap {
   overflow: hidden;
-  height: 100vh;
   background: seagreen;
+  height: 100%;
   .wel {
     margin-top: 20px;
     font-size: 28px;

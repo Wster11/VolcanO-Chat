@@ -82,17 +82,16 @@ export default class App extends Vue {
 </script>
 
 <style>
+body {
+  background: #fdfdfd;
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  height: 100vh;
-  overflow: hidden;
-}
-
-body {
-  background: #fdfdfd;
+  height: 100%;
 }
 
 @import "./base.css"; /*引入公共样式*/
