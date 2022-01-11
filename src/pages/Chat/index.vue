@@ -270,9 +270,12 @@ export default class Contact extends Vue {
   padding: 2vw;
   text-align: left;
 }
+.chatDetailWrap {
+  height: 100%;
+}
 #msgWrap {
   padding: 10px;
-  height: calc(100vh - 100px - 15vw);
+  height: calc(100% - 100px - 15vw);
   overflow: scroll;
 }
 .icon {
