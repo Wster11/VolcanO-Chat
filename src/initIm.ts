@@ -3,7 +3,8 @@ import { appKey } from "@/const/index";
 
 const conn: EasemobChat.Connection = new websdk.connection({
   appKey,
-  isHttpDNS: true
+  isHttpDNS: true,
+  // useOwnUploadFun: true
 });
 
 export default conn;

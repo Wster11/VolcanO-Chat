@@ -9,6 +9,11 @@
           @click="leftMsg.previewImg(msg.url)"
         />
       </div>
+      <div v-else-if="msg.type === leftMsg.msgType.file">
+        <div class="fileMsg" @click="leftMsg.downloadAttach(msg.url)">
+          {{ msg.filename }}<Icon class="icon" size="18" name="down" />
+        </div>
+      </div>
     </div>
     <div class="time">{{ leftMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>
@@ -18,11 +23,15 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
 import { MSG_TYPE } from "@/const";
+import { Icon } from "vant";
 
 @Options({
   props: {
     msg: Object,
     timestamp: Number
+  },
+  components: {
+    Icon
   },
   emits: ["previewImg"]
 })
@@ -31,10 +40,14 @@ export default class MessageLeft extends Vue {
     const previewImg = (url: string) => {
       this.$emit("previewImg", url);
     };
+    const downloadAttach = (url: string) => {
+      window.open(url);
+    };
     return {
       formatTime,
       msgType: MSG_TYPE,
-      previewImg
+      previewImg,
+      downloadAttach
     };
   });
 }
@@ -61,5 +74,14 @@ export default class MessageLeft extends Vue {
 }
 .imgMsg {
   max-width: 100%;
+}
+.fileMsg {
+  padding: 5px;
+  background: #fff;
+}
+.icon {
+  vertical-align: middle;
+  margin-left: 10px;
+  color: seagreen;
 }
 </style>

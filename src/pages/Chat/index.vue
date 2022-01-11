@@ -42,8 +42,11 @@
             <Icon class="icon" size="20" name="smile-o" />
           </template>
         </Popover>
-        <Uploader :after-read="chat.afterRead">
+        <Uploader :after-read="chat.afterReadImg">
           <Icon class="icon" size="20" name="photo-o" />
+        </Uploader>
+        <Uploader :after-read="chat.afterReadAttach" accept="*">
+          <Icon class="icon" size="20" name="idcard" />
         </Uploader>
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
@@ -164,13 +167,23 @@ export default class Contact extends Vue {
       ipt.ipt.mergeTxt(emojiStr);
     };
 
-    const afterRead = (file: any) => {
+    const afterReadImg = (file: any) => {
+      // 直接发送图片URL(用户自行上传图片到自己的服务器)
+      // Web端需要在 WebIMConfig.js中 设置 useOwnUploadFun: true
+      // const imgMsg = createMsg({
+      //   chatType: CHAT_TYPE.singleChat,
+      //   type: MSG_TYPE.img,
+      //   url: "https://www.easemob.com/statics/common/images/logo.png?20211109",
+      //   to: fromId
+      // });
+
       const imgMsg = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.img,
         to: fromId,
         file: formatImFile(file.file) as any
       });
+
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
         console.log(imgMsg, "imgMsg");
@@ -179,6 +192,26 @@ export default class Contact extends Vue {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
         console.log(res, "发送图片消息成功");
+      });
+    };
+
+    const afterReadAttach = (file: any) => {
+      // 发送附件消息
+      const attachMsg = createMsg({
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.file,
+        to: fromId,
+        filename: file.file.name,
+        file: formatImFile(file.file) as any
+      });
+
+      deliverMsg(attachMsg).then((res) => {
+        console.log(attachMsg, "attachMsg");
+        store.commit("IM/updateChat", { fromId, message: attachMsg });
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+        console.log(res, "发送附件消息成功");
       });
     };
 
@@ -191,7 +224,8 @@ export default class Contact extends Vue {
       sendMsg,
       selectEmoji: selectEmoji,
       sendEmoji: sendEmoji,
-      afterRead: afterRead,
+      afterReadImg: afterReadImg,
+      afterReadAttach: afterReadAttach,
       previewImage
     };
   });
