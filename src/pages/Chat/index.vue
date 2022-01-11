@@ -3,19 +3,17 @@
     <NavBar :title="chat.fromId" left-arrow @click-left="chat.toChat" />
     <div id="msgWrap">
       <div
-        v-for="(item, idx) in chat.chatInfo[chat.fromId]?.messageList"
+        v-for="item in chat.chatInfo[chat.fromId]?.messageList"
         :key="item.id"
       >
         <MsgLeft
           v-if="item.from"
-          :idx="idx"
           :msg="item"
           :timestamp="item.time"
           @previewImg="chat.previewImage"
         />
         <MsgRight
           v-else
-          :idx="idx"
           :msg="item"
           :timestamp="item.time"
           @previewImg="chat.previewImage"
@@ -99,7 +97,7 @@ export default class Contact extends Vue {
     const fromId = route.params.fromId as string;
     const emojiShow = ref(false);
 
-    const previewImage = (idx: number) => {
+    const previewImage = (url: string) => {
       // TODO: 发送接收消息时push图片url,不要每次都获取
       const imgMsgList = store.state.IM.chat[fromId]?.messageList
         .filter((item: EasemobChat.MessageBody) => {
@@ -111,7 +109,9 @@ export default class Contact extends Vue {
 
       ImagePreview({
         images: imgMsgList,
-        startPosition: idx
+        startPosition: imgMsgList.findIndex((imgUrl: string) => {
+          return imgUrl === url;
+        })
       });
     };
 
@@ -173,7 +173,7 @@ export default class Contact extends Vue {
       });
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
-        console.log(imgMsg, 'imgMsg')
+        console.log(imgMsg, "imgMsg");
         store.commit("IM/updateChat", { fromId, message: imgMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));

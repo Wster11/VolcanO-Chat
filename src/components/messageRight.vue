@@ -6,7 +6,7 @@
         <img
           class="imgMsg"
           :src="msg.body.url"
-          @click="rightMsg.previewImg(idx)"
+          @click="rightMsg.previewImg(msg.body.url)"
         />
       </div>
     </div>
@@ -21,15 +21,14 @@ import { MSG_TYPE } from "@/const";
 @Options({
   props: {
     msg: Object,
-    timestamp: Number,
-    idx: Number
+    timestamp: Number
   },
   emits: ["previewImg"]
 })
 export default class MessageRight extends Vue {
   rightMsg = setup(() => {
-    const previewImg = (idx: number) => {
-      this.$emit("previewImg", idx);
+    const previewImg = (url: string) => {
+      this.$emit("previewImg", url);
     };
     return {
       formatTime,
