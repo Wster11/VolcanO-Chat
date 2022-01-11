@@ -40,6 +40,10 @@ export default class App extends Vue {
         onFileMessage: (message) => {
           store.commit("IM/updateChat", { fromId: message.from, message });
           console.log("收到附件消息了", message);
+        },
+        onVideoMessage: (message) => {
+          store.commit("IM/updateChat", { fromId: message.from, message });
+          console.log("收到视频消息了", message);
         }
       });
       conn.addEventHandler("ERROR", {
@@ -84,6 +88,7 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   height: 100vh;
+  overflow: hidden;
 }
 
 body {

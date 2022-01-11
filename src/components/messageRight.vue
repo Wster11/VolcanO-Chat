@@ -14,6 +14,11 @@
           {{ msg.filename }}<Icon class="icon" size="18" name="down" />
         </div>
       </div>
+      <div v-else-if="msg.type === rightMsg.msgType.video">
+        <div class="videoMsg">
+          <video :src="msg.url" controls />
+        </div>
+      </div>
     </div>
     <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>
@@ -52,7 +57,7 @@ export default class MessageRight extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .messageItemWrap {
   text-align: right;
   margin-bottom: 10px;
@@ -85,5 +90,11 @@ export default class MessageRight extends Vue {
   vertical-align: middle;
   margin-left: 10px;
   color: seagreen;
+}
+
+.videoMsg {
+  video {
+    width: 200px;
+  }
 }
 </style>

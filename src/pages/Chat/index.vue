@@ -45,6 +45,9 @@
         <Uploader :after-read="chat.afterReadImg">
           <Icon class="icon" size="20" name="photo-o" />
         </Uploader>
+        <Uploader accept="video/*" :after-read="chat.afterReadVideo">
+          <Icon class="icon" size="20" name="video-o" />
+        </Uploader>
         <Uploader :after-read="chat.afterReadAttach" accept="*">
           <Icon class="icon" size="20" name="idcard" />
         </Uploader>
@@ -215,6 +218,28 @@ export default class Contact extends Vue {
       });
     };
 
+    const afterReadVideo = (file: any) => {
+      // 发送视频消息
+      const videoMsg = createMsg({
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.video,
+        to: fromId,
+        filename: file.file.name,
+        file: formatImFile(file.file) as any,
+        file_length: 0,
+        length: 0
+      });
+
+      deliverMsg(videoMsg).then((res) => {
+        console.log(videoMsg, "attachMsg");
+        store.commit("IM/updateChat", { fromId, message: videoMsg });
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+        console.log(res, "发送视频消息成功");
+      });
+    };
+
     return {
       fromId: fromId,
       emojiShow,
@@ -226,7 +251,8 @@ export default class Contact extends Vue {
       sendEmoji: sendEmoji,
       afterReadImg: afterReadImg,
       afterReadAttach: afterReadAttach,
-      previewImage
+      previewImage,
+      afterReadVideo
     };
   });
 }
