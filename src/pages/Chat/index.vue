@@ -57,12 +57,7 @@
           name="balance-o"
           @click="chat.sendCustomMsg"
         />
-        <Icon
-          class="icon"
-          size="20"
-          name="replay"
-          @click="chat.sendCmdMsg"
-        />
+        <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -298,10 +293,10 @@ export default class Contact extends Vue {
       chatInfo: store.state.IM.chat,
       toChat,
       sendMsg,
-      selectEmoji: selectEmoji,
-      sendEmoji: sendEmoji,
-      afterReadImg: afterReadImg,
-      afterReadAttach: afterReadAttach,
+      selectEmoji,
+      sendEmoji,
+      afterReadImg,
+      afterReadAttach,
       previewImage,
       afterReadVideo,
       sendCustomMsg,

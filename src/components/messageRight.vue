@@ -24,7 +24,7 @@
           自定义消息 {{ msg.customEvent }}{{ JSON.stringify(msg.customExts) }}
         </div>
       </div>
-      <div v-else-if="msg.type === leftMsg.msgType.cmd">
+      <div v-else-if="msg.type === rightMsg.msgType.cmd">
         <div>cmd消息 action: {{ msg.action }}</div>
       </div>
     </div>
