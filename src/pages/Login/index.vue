@@ -36,10 +36,12 @@
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import { Form, Field, CellGroup, Button } from "vant";
+import { Form, Field, CellGroup, Button, Toast } from "vant";
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { ERROR_CODE } from "@/const/errorCode";
+import { EasemobChat } from "easemob-websdk";
 
 interface LoginFormParams {
   user: string;
@@ -65,25 +67,30 @@ export default class Login extends Vue {
     const username = ref<string>("");
     const password = ref<string>("");
     const route = useRoute();
+    const router = useRouter();
 
     let loading = ref<boolean>(false);
 
     const login = (opt: any) => {
       // 登录服务器
       loading.value = true;
-      store.state.IM.connect.open(opt);
+      store.state.IM.connect
+        .open(opt)
+        .then(() => {
+          router.push("/chat");
+        })
+        .catch((e: EasemobChat.ErrorEvent) => {
+          if (e.message === ERROR_CODE.loginFailed) {
+            Toast("用户名或密码错误");
+          }
+        })
+        .finally(() => {
+          loading.value = false;
+        });
     };
 
     const onSubmit = (params: LoginFormParams): void => {
-      login({
-        ...params,
-        success: () => {
-          loading.value = false;
-        },
-        error: () => {
-          loading.value = false;
-        }
-      });
+      login(params);
     };
     onMounted(() => {
       console.log(route.query.id, "route");
@@ -98,8 +105,8 @@ export default class Login extends Vue {
     return {
       username,
       password,
-      onSubmit,
-      loading
+      loading,
+      onSubmit
     };
   });
 }

@@ -9,7 +9,6 @@ import { onMounted } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
-import { Toast } from "vant";
 
 @Options({
   components: {
@@ -22,12 +21,6 @@ export default class App extends Vue {
     onMounted(() => {
       const store = useStore();
       store.commit("IM/setConnect", conn);
-      conn.addEventHandler("CONNECTION", {
-        onConnected: () => {
-          console.log("onConnected");
-          router.push("/chat");
-        }
-      });
 
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
@@ -51,24 +44,6 @@ export default class App extends Vue {
           switch (e.message) {
             case ERROR_CODE.noAuth:
               router.push("/login");
-              break;
-            case ERROR_CODE.loginFailed:
-              Toast("用户名或密码错误");
-              break;
-            default:
-              break;
-          }
-        }
-      });
-      //3.0 监听事件写法
-      conn.listen({
-        onError: (e) => {
-          switch (e.message) {
-            case ERROR_CODE.noAuth:
-              router.push("/login");
-              break;
-            case ERROR_CODE.loginFailed:
-              Toast("用户名或密码错误");
               break;
             default:
               break;
