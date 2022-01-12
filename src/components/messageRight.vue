@@ -19,6 +19,14 @@
           <video :src="msg.url" controls />
         </div>
       </div>
+      <div v-else-if="msg.type === rightMsg.msgType.custom">
+        <div>
+          自定义消息 {{ msg.customEvent }}{{ JSON.stringify(msg.customExts) }}
+        </div>
+      </div>
+      <div v-else-if="msg.type === leftMsg.msgType.cmd">
+        <div>cmd消息 action: {{ msg.action }}</div>
+      </div>
     </div>
     <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>

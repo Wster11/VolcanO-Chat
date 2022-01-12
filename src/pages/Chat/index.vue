@@ -51,6 +51,18 @@
         <Uploader :after-read="chat.afterReadAttach" accept="*">
           <Icon class="icon" size="20" name="idcard" />
         </Uploader>
+        <Icon
+          class="icon"
+          size="20"
+          name="balance-o"
+          @click="chat.sendCustomMsg"
+        />
+        <Icon
+          class="icon"
+          size="20"
+          name="replay"
+          @click="chat.sendCmdMsg"
+        />
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -240,6 +252,45 @@ export default class Contact extends Vue {
       });
     };
 
+    // 发送自定义消息
+    const sendCustomMsg = () => {
+      const customMsg = createMsg({
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.custom,
+        to: fromId,
+        customEvent: "RED_PACKAGE",
+        customExts: {
+          amount: 1000
+        }
+      });
+
+      deliverMsg(customMsg).then((res) => {
+        store.commit("IM/updateChat", { fromId, message: customMsg });
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+        console.log(res, "发送自定义消息成功");
+      });
+    };
+
+    // 发送命令消息
+    const sendCmdMsg = () => {
+      const cmdMsg = createMsg({
+        chatType: CHAT_TYPE.singleChat,
+        type: MSG_TYPE.cmd,
+        to: fromId,
+        action: "refresh"
+      });
+
+      deliverMsg(cmdMsg).then((res) => {
+        store.commit("IM/updateChat", { fromId, message: cmdMsg });
+        setTimeout(() => {
+          scrollToBottom(document.getElementById("msgWrap"));
+        }, 200);
+        console.log(res, "发送命令消息成功");
+      });
+    };
+
     return {
       fromId: fromId,
       emojiShow,
@@ -252,7 +303,9 @@ export default class Contact extends Vue {
       afterReadImg: afterReadImg,
       afterReadAttach: afterReadAttach,
       previewImage,
-      afterReadVideo
+      afterReadVideo,
+      sendCustomMsg,
+      sendCmdMsg
     };
   });
 }

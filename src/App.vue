@@ -37,6 +37,14 @@ export default class App extends Vue {
         onVideoMessage: (message) => {
           store.commit("IM/updateChat", { fromId: message.from, message });
           console.log("收到视频消息了", message);
+        },
+        onCustomMessage: (message) => {
+          store.commit("IM/updateChat", { fromId: message.from, message });
+          console.log("收到自定义消息了", message);
+        },
+        onCmdMessage: (message) => {
+          store.commit("IM/updateChat", { fromId: message.from, message });
+          console.log("收到命令消息了", message);
         }
       });
       conn.addEventHandler("ERROR", {
