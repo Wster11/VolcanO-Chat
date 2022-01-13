@@ -15,6 +15,26 @@ const deliverMsg = (msg: EasemobChat.MessageBody) => {
           console.log("未登录");
         }
         reject(e);
+        console.log(e, "发送消息失败");
+      });
+  });
+};
+
+// 撤回消息
+
+const recallMessage = (msg: any) => {
+  return new Promise((resolve, reject) => {
+    conn
+      .recallMessage(msg)
+      .then((res: any) => {
+        resolve(res);
+      })
+      .catch((e: any) => {
+        if (e.message === ERROR_CODE.notLogin) {
+          console.log("未登录");
+        }
+        reject(e);
+        console.log(e, "撤回消息失败");
       });
   });
 };
@@ -33,5 +53,4 @@ const formatImFile = (file: File) => {
   };
 };
 
-
-export { deliverMsg, formatImFile, createMsg };
+export { deliverMsg, formatImFile, createMsg, recallMessage };

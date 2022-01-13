@@ -58,6 +58,7 @@
           @click="chat.sendCustomMsg"
         />
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
+        <Icon class="icon" size="20" name="revoke" @click="chat.revokeMsg" />
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -84,7 +85,7 @@ import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
-import { deliverMsg, formatImFile, createMsg } from "@/utils/im";
+import { deliverMsg, formatImFile, createMsg, recallMessage } from "@/utils/im";
 import { EasemobChat } from "easemob-websdk";
 
 @Options({
@@ -160,11 +161,12 @@ export default class Contact extends Vue {
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息
       });
-      store.commit("IM/updateChat", { fromId, message: msg });
-      const ipt: any = instance?.refs.ipt;
-      ipt.ipt.clear();
+
       deliverMsg(msg).then(() => {
         console.log("发送成功");
+        store.commit("IM/updateChat", { fromId, message: msg });
+        const ipt: any = instance?.refs.ipt;
+        ipt.ipt.clear();
         scrollToBottom(document.getElementById("msgWrap"));
       });
     };
@@ -191,7 +193,19 @@ export default class Contact extends Vue {
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.img,
         to: fromId,
-        file: formatImFile(file.file) as any
+        file: formatImFile(file.file) as any,
+        onFileUploadError: function () {
+          // 消息上传失败
+          console.log("onFileUploadError");
+        },
+        onFileUploadProgress: function (progress) {
+          // 上传进度的回调
+          console.log(progress);
+        },
+        onFileUploadComplete: function () {
+          // 消息上传成功
+          console.log("onFileUploadComplete");
+        }
       });
 
       // 发送图片消息
@@ -212,7 +226,19 @@ export default class Contact extends Vue {
         type: MSG_TYPE.file,
         to: fromId,
         filename: file.file.name,
-        file: formatImFile(file.file) as any
+        file: formatImFile(file.file) as any,
+        onFileUploadError: function () {
+          // 消息上传失败
+          console.log("onFileUploadError");
+        },
+        onFileUploadProgress: function (progress) {
+          // 上传进度的回调
+          console.log(progress);
+        },
+        onFileUploadComplete: function () {
+          // 消息上传成功
+          console.log("onFileUploadComplete");
+        }
       });
 
       deliverMsg(attachMsg).then((res) => {
@@ -286,6 +312,18 @@ export default class Contact extends Vue {
       });
     };
 
+    const revokeMsg = () => {
+      let messageList = store.state.IM.chat[fromId]?.messageList;
+      const msg = {
+        mid: messageList[messageList?.length - 1].id,
+        to: fromId,
+        chatType: CHAT_TYPE.singleChat
+      };
+      recallMessage(msg).then((res) => {
+        console.log(res, "撤回消息成功");
+      });
+    };
+
     return {
       fromId: fromId,
       emojiShow,
@@ -300,7 +338,8 @@ export default class Contact extends Vue {
       previewImage,
       afterReadVideo,
       sendCustomMsg,
-      sendCmdMsg
+      sendCmdMsg,
+      revokeMsg
     };
   });
 }

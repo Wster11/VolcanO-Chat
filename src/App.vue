@@ -45,6 +45,10 @@ export default class App extends Vue {
         onCmdMessage: (message) => {
           store.commit("IM/updateChat", { fromId: message.from, message });
           console.log("收到命令消息了", message);
+        },
+        onRecallMessage: (message) => {
+          //  store.commit("IM/updateChat", { fromId: message.from, message });
+          console.log("收到撤回消息了", message);
         }
       });
       conn.addEventHandler("ERROR", {
