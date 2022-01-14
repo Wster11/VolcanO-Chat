@@ -252,15 +252,14 @@ export default class Contact extends Vue {
     };
 
     const afterReadVideo = (file: any) => {
+      console.log(file, "file");
       // 发送视频消息
       const videoMsg = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.video,
         to: fromId,
         filename: file.file.name,
-        file: formatImFile(file.file) as any,
-        file_length: 0,
-        length: 0
+        file: formatImFile(file.file) as any
       });
 
       deliverMsg(videoMsg).then((res) => {
@@ -313,12 +312,12 @@ export default class Contact extends Vue {
     };
 
     const revokeMsg = (id: number) => {
-      const msg = {
+      const options = {
         mid: id,
         to: fromId,
         chatType: CHAT_TYPE.singleChat
       };
-      recallMessage(msg).then((res) => {
+      recallMessage(options).then((res) => {
         store.commit("IM/deleteMessage", { fromId, id });
         console.log(res, "撤回消息成功");
       });

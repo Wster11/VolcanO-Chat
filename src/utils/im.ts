@@ -23,10 +23,10 @@ const deliverMsg = (msg: EasemobChat.MessageBody) => {
 
 // 撤回消息
 
-const recallMessage = (msg: any) => {
+const recallMessage = (options: any) => {
   return new Promise((resolve, reject) => {
     conn
-      .recallMessage(msg)
+      .recallMessage(options)
       .then((res) => {
         resolve(res);
       })
