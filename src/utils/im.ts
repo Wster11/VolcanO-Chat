@@ -1,6 +1,7 @@
 import { ERROR_CODE } from "@/const/errorCode";
 import websdk, { EasemobChat } from "easemob-websdk";
 import conn from "../initIm";
+import { Toast } from "vant";
 
 // 发送消息
 const deliverMsg = (msg: EasemobChat.MessageBody) => {
@@ -33,6 +34,8 @@ const recallMessage = (options: any) => {
       .catch((e: any) => {
         if (e.message === ERROR_CODE.notLogin) {
           console.log("未登录");
+        } else if (e.message === ERROR_CODE.recallTimeout) {
+          Toast("已超过可撤回时间");
         }
         reject(e);
         console.log(e, "撤回消息失败");
