@@ -20,4 +20,8 @@ enum CHAT_TYPE {
   chatRoom = "chatRoom"
 }
 
-export { appKey, MSG_TYPE, CHAT_TYPE };
+enum MSG_OPT_TYPE {
+  recall = "撤回"
+}
+
+export { appKey, MSG_TYPE, CHAT_TYPE, MSG_OPT_TYPE };

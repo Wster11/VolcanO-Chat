@@ -7,8 +7,9 @@ const deliverMsg = (msg: EasemobChat.MessageBody) => {
   return new Promise((resolve, reject) => {
     conn
       .send(msg)
-      .then((res: any) => {
+      .then((res) => {
         resolve(res);
+        msg.id = res.serverMsgId;
       })
       .catch((e: any) => {
         if (e.message === ERROR_CODE.notLogin) {
@@ -26,7 +27,7 @@ const recallMessage = (msg: any) => {
   return new Promise((resolve, reject) => {
     conn
       .recallMessage(msg)
-      .then((res: any) => {
+      .then((res) => {
         resolve(res);
       })
       .catch((e: any) => {

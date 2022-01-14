@@ -19,35 +19,42 @@ export default class App extends Vue {
   app = setup(() => {
     const router: Router = useRouter();
     onMounted(() => {
+      document.oncontextmenu = function (e) {
+        // 禁用浏览器菜单
+        e.preventDefault();
+      };
       const store = useStore();
       store.commit("IM/setConnect", conn);
 
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
         },
         onImageMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
           console.log("收到图片消息了", message);
         },
         onFileMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
           console.log("收到附件消息了", message);
         },
         onVideoMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
           console.log("收到视频消息了", message);
         },
         onCustomMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
           console.log("收到自定义消息了", message);
         },
         onCmdMessage: (message) => {
-          store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/pushMessage", { fromId: message.from, message });
           console.log("收到命令消息了", message);
         },
         onRecallMessage: (message) => {
-          //  store.commit("IM/updateChat", { fromId: message.from, message });
+          store.commit("IM/deleteMessage", {
+            fromId: message.from,
+            id: message.mid
+          });
           console.log("收到撤回消息了", message);
         }
       });

@@ -17,6 +17,7 @@
           :msg="item"
           :timestamp="item.time"
           @previewImg="chat.previewImage"
+          @recallMessage="chat.revokeMsg(item.id)"
         />
       </div>
     </div>
@@ -58,7 +59,6 @@
           @click="chat.sendCustomMsg"
         />
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
-        <Icon class="icon" size="20" name="revoke" @click="chat.revokeMsg" />
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -164,7 +164,7 @@ export default class Contact extends Vue {
 
       deliverMsg(msg).then(() => {
         console.log("发送成功");
-        store.commit("IM/updateChat", { fromId, message: msg });
+        store.commit("IM/pushMessage", { fromId, message: msg });
         const ipt: any = instance?.refs.ipt;
         ipt.ipt.clear();
         scrollToBottom(document.getElementById("msgWrap"));
@@ -211,7 +211,7 @@ export default class Contact extends Vue {
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
         console.log(imgMsg, "imgMsg");
-        store.commit("IM/updateChat", { fromId, message: imgMsg });
+        store.commit("IM/pushMessage", { fromId, message: imgMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -243,7 +243,7 @@ export default class Contact extends Vue {
 
       deliverMsg(attachMsg).then((res) => {
         console.log(attachMsg, "attachMsg");
-        store.commit("IM/updateChat", { fromId, message: attachMsg });
+        store.commit("IM/pushMessage", { fromId, message: attachMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -265,7 +265,7 @@ export default class Contact extends Vue {
 
       deliverMsg(videoMsg).then((res) => {
         console.log(videoMsg, "attachMsg");
-        store.commit("IM/updateChat", { fromId, message: videoMsg });
+        store.commit("IM/pushMessage", { fromId, message: videoMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -286,7 +286,7 @@ export default class Contact extends Vue {
       });
 
       deliverMsg(customMsg).then((res) => {
-        store.commit("IM/updateChat", { fromId, message: customMsg });
+        store.commit("IM/pushMessage", { fromId, message: customMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -304,7 +304,7 @@ export default class Contact extends Vue {
       });
 
       deliverMsg(cmdMsg).then((res) => {
-        store.commit("IM/updateChat", { fromId, message: cmdMsg });
+        store.commit("IM/pushMessage", { fromId, message: cmdMsg });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -312,14 +312,14 @@ export default class Contact extends Vue {
       });
     };
 
-    const revokeMsg = () => {
-      let messageList = store.state.IM.chat[fromId]?.messageList;
+    const revokeMsg = (id: number) => {
       const msg = {
-        mid: messageList[messageList?.length - 1].id,
+        mid: id,
         to: fromId,
         chatType: CHAT_TYPE.singleChat
       };
       recallMessage(msg).then((res) => {
+        store.commit("IM/deleteMessage", { fromId, id });
         console.log(res, "撤回消息成功");
       });
     };

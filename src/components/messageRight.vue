@@ -1,33 +1,50 @@
 <template>
   <div class="messageItemWrap">
-    <div class="messageItem">
-      <div v-if="msg.type === rightMsg.msgType.txt" v-html="msg.msg"></div>
-      <div v-else-if="msg.type === rightMsg.msgType.img">
-        <img
-          class="imgMsg"
-          :src="msg.url"
-          @click="rightMsg.previewImg(msg.url)"
-        />
-      </div>
-      <div v-else-if="msg.type === rightMsg.msgType.file">
-        <div class="fileMsg" @click="rightMsg.downloadAttach(msg.url)">
-          {{ msg.filename }}<Icon class="icon" size="18" name="down" />
+    <Popover
+      v-model:show="rightMsg.isShowMenu"
+      :actions="rightMsg.actions"
+      @select="rightMsg.onSelect"
+      placement="top-end"
+      theme="dark"
+      trigger="manual"
+    >
+      <template #reference>
+        <div
+          class="messageItem"
+          @touchstart="rightMsg.showMenu"
+          @touchend="rightMsg.end"
+        >
+          <div v-if="msg.type === rightMsg.msgType.txt" v-html="msg.msg"></div>
+          <div v-else-if="msg.type === rightMsg.msgType.img">
+            <img
+              class="imgMsg"
+              :src="msg.url"
+              @click="rightMsg.previewImg(msg.url)"
+            />
+          </div>
+          <div v-else-if="msg.type === rightMsg.msgType.file">
+            <div class="fileMsg" @click="rightMsg.downloadAttach(msg.url)">
+              {{ msg.filename }}<Icon class="icon" size="18" name="down" />
+            </div>
+          </div>
+          <div v-else-if="msg.type === rightMsg.msgType.video">
+            <div class="videoMsg">
+              <video :src="msg.url" controls />
+            </div>
+          </div>
+          <div v-else-if="msg.type === rightMsg.msgType.custom">
+            <div>
+              自定义消息 {{ msg.customEvent
+              }}{{ JSON.stringify(msg.customExts) }}
+            </div>
+          </div>
+          <div v-else-if="msg.type === rightMsg.msgType.cmd">
+            <div>cmd消息 action: {{ msg.action }}</div>
+          </div>
         </div>
-      </div>
-      <div v-else-if="msg.type === rightMsg.msgType.video">
-        <div class="videoMsg">
-          <video :src="msg.url" controls />
-        </div>
-      </div>
-      <div v-else-if="msg.type === rightMsg.msgType.custom">
-        <div>
-          自定义消息 {{ msg.customEvent }}{{ JSON.stringify(msg.customExts) }}
-        </div>
-      </div>
-      <div v-else-if="msg.type === rightMsg.msgType.cmd">
-        <div>cmd消息 action: {{ msg.action }}</div>
-      </div>
-    </div>
+      </template>
+    </Popover>
+
     <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
   </div>
 </template>
@@ -35,30 +52,60 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
-import { MSG_TYPE } from "@/const";
-import { Icon } from "vant";
+import { MSG_TYPE, MSG_OPT_TYPE } from "@/const";
+import { ref } from "vue";
+import { Icon, Popover, PopoverAction } from "vant";
 @Options({
   props: {
     msg: Object,
     timestamp: Number
   },
   components: {
-    Icon
+    Icon,
+    Popover
   },
-  emits: ["previewImg"]
+  emits: ["previewImg", "recallMessage"]
 })
 export default class MessageRight extends Vue {
   rightMsg = setup(() => {
+    let intervalId: number;
     const previewImg = (url: string) => {
       this.$emit("previewImg", url);
     };
     const downloadAttach = (url: string) => {
       window.open(url);
     };
+
+    const isShowMenu = ref(false);
+
+    const actions: PopoverAction[] = [{ text: MSG_OPT_TYPE.recall }];
+
+    const showMenu = () => {
+      clearInterval(intervalId);
+      intervalId = setTimeout(() => {
+        isShowMenu.value = true;
+      }, 300);
+    };
+
+    const end = () => {
+      clearInterval(intervalId);
+    };
+
+    const onSelect = (action: PopoverAction) => {
+      if (action.text === MSG_OPT_TYPE.recall) {
+        this.$emit("recallMessage");
+      }
+    };
+
     return {
-      formatTime,
+      actions,
       msgType: MSG_TYPE,
+      isShowMenu,
+      formatTime,
+      onSelect,
       previewImg,
+      showMenu,
+      end,
       downloadAttach
     };
   });
