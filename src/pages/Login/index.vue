@@ -77,6 +77,7 @@ export default class Login extends Vue {
       store.state.IM.connect
         .open(opt)
         .then(() => {
+          window.localStorage.setItem("uid", username.value);
           router.push("/chat");
         })
         .catch((e: EasemobChat.ErrorEvent) => {

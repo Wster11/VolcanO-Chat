@@ -17,7 +17,11 @@
       </template>
     </NavBar>
     <div class="userListWrap">
-      <User v-for="item in chat.chatList" :key="item" :name="item" />
+      <User
+        v-for="item in chat.chatList"
+        :key="item"
+        :name="chat.formatSessionListTo(item.meta.from, item.meta.to)"
+      />
     </div>
   </div>
 </template>
@@ -28,6 +32,8 @@ import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
 import { NavBar, Icon, Popover } from "vant";
 import User from "@/components/user.vue";
+import { EasemobChat } from "easemob-websdk";
+import { formatSessionListTo } from "@/utils/im";
 
 interface Actions {
   text: string;
@@ -44,8 +50,12 @@ interface Actions {
 export default class Home extends Vue {
   chat = setup(() => {
     const store = useStore();
-    const chatList = ref<Array<string>>([]);
+    const chatList = ref<Array<EasemobChat.SessionInfo>>([]);
     const showPopover = ref(false);
+
+    interface ChannelInfo {
+      channel_infos: EasemobChat.SessionInfo[];
+    }
 
     // 通过 actions 属性来定义菜单选项
     const actions: Array<Actions> = [
@@ -58,16 +68,19 @@ export default class Home extends Vue {
     };
 
     onMounted(() => {
-      store.state.IM.connect.getRoster().then((res: any) => {
-        chatList.value = res.data;
-      });
+      store.state.IM.connect
+        .getSessionList()
+        .then((res: EasemobChat.AsyncResult<ChannelInfo>) => {
+          chatList.value = res.data?.channel_infos || [];
+        });
     });
 
     return {
       chatList,
       showPopover,
       actions,
-      onSelect
+      onSelect,
+      formatSessionListTo
     };
   });
 }

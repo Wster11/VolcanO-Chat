@@ -2,6 +2,7 @@ import { ERROR_CODE } from "@/const/errorCode";
 import websdk, { EasemobChat } from "easemob-websdk";
 import conn from "../initIm";
 import { Toast } from "vant";
+import { appKey } from "@/const/index";
 
 // 发送消息
 const deliverMsg = (msg: EasemobChat.MessageBody) => {
@@ -57,4 +58,19 @@ const formatImFile = (file: File) => {
   };
 };
 
-export { deliverMsg, formatImFile, createMsg, recallMessage };
+// 格式化会话列表to, 获取用户ID
+const formatSessionListTo = (from: string, to: string) => {
+  const uid = window.localStorage.getItem("uid");
+  const fromUid = from.split(`${appKey}_`)[1].split("@easemob.com")[0];
+  const toUid = to.split(`${appKey}_`)[1].split("@easemob.com")[0];
+  console.log(uid, '')
+  return uid === fromUid ? toUid : fromUid;
+};
+
+export {
+  deliverMsg,
+  formatImFile,
+  createMsg,
+  recallMessage,
+  formatSessionListTo
+};
