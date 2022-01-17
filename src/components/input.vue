@@ -27,7 +27,9 @@ export default class Contact extends Vue {
     const txt = ref("");
 
     const handleEnter = () => {
-      this.$emit("send", txt.value);
+      if (txt.value) {
+        this.$emit("send", txt.value);
+      }
     };
 
     const clear = () => {

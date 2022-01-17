@@ -79,7 +79,7 @@ import {
   ImagePreview
 } from "vant";
 import { useStore } from "vuex";
-import { getCurrentInstance, ref } from "vue";
+import { getCurrentInstance, ref, onMounted } from "vue";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
 import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
@@ -252,14 +252,25 @@ export default class Contact extends Vue {
     };
 
     const afterReadVideo = (file: any) => {
-      console.log(file, "file");
       // 发送视频消息
       const videoMsg = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.video,
         to: fromId,
         filename: file.file.name,
-        file: formatImFile(file.file) as any
+        file: formatImFile(file.file) as any,
+        onFileUploadError: function () {
+          // 消息上传失败
+          console.log("onFileUploadError");
+        },
+        onFileUploadProgress: function (e) {
+          // 上传进度的回调
+          console.log(e);
+        },
+        onFileUploadComplete: function () {
+          // 消息上传成功
+          console.log("onFileUploadComplete");
+        }
       });
 
       deliverMsg(videoMsg).then((res) => {
@@ -323,6 +334,40 @@ export default class Contact extends Vue {
       });
     };
 
+    // 发送会话已读回执
+    const sendChatReadAck = () => {
+      const readAckMsg = createMsg({
+        type: MSG_TYPE.channel,
+        chatType: CHAT_TYPE.singleChat,
+        to: fromId
+      });
+      deliverMsg(readAckMsg).then((res) => {
+        console.log(res, "发送会话已读回执成功");
+      });
+    };
+
+    // 发送消息已读回执
+    const sendMsgReadAck = () => {
+      let id =
+        store.state.IM.chat[fromId]?.messageList[
+          store.state.IM.chat[fromId]?.messageList.length - 1
+        ];
+      const readAckMsg = createMsg({
+        type: MSG_TYPE.read,
+        id,
+        to: fromId
+      });
+
+      deliverMsg(readAckMsg).then((res) => {
+        console.log(res, "发送消息已读回执成功");
+      });
+    };
+
+    onMounted(() => {
+      // 发送会话已读回执
+      sendChatReadAck();
+    });
+
     return {
       fromId: fromId,
       emojiShow,
@@ -338,7 +383,9 @@ export default class Contact extends Vue {
       afterReadVideo,
       sendCustomMsg,
       sendCmdMsg,
-      revokeMsg
+      revokeMsg,
+      sendChatReadAck,
+      sendMsgReadAck
     };
   });
 }

@@ -1,4 +1,4 @@
-const appKey: string = "1161210719091872#demo";
+const appKey: string = "easemob-demo#easeim";
 
 enum MSG_TYPE {
   read = "read",
@@ -21,7 +21,8 @@ enum CHAT_TYPE {
 }
 
 enum MSG_OPT_TYPE {
-  recall = "撤回"
+  recall = "撤回",
+  // read = "已读"
 }
 
 export { appKey, MSG_TYPE, CHAT_TYPE, MSG_OPT_TYPE };

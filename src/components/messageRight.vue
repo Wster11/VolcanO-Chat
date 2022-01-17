@@ -125,7 +125,7 @@ export default class MessageRight extends Vue {
   background: #f3f3f2;
   border-radius: 10px;
   padding: 7px;
-  min-width: 100px;
+  // min-width: 100px;
   max-width: 80vw;
   cursor: pointer;
 }

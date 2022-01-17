@@ -56,6 +56,15 @@ export default class App extends Vue {
             id: message.mid
           });
           console.log("收到撤回消息了", message);
+        },
+        onDeliveredMessage: (message) => {
+          console.log("收到送达回执消息了", message);
+        },
+        onChannelMessage: (message) => {
+          console.log("收到会话已读回执消息了", message);
+        },
+        onReadMessage: (message) => {
+          console.log("收到消息已读回执消息了", message);
         }
       });
       conn.addEventHandler("ERROR", {
