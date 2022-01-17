@@ -63,7 +63,6 @@ const formatSessionListTo = (from: string, to: string) => {
   const uid = window.localStorage.getItem("uid");
   const fromUid = from.split(`${appKey}_`)[1].split("@easemob.com")[0];
   const toUid = to.split(`${appKey}_`)[1].split("@easemob.com")[0];
-  console.log(uid, '')
   return uid === fromUid ? toUid : fromUid;
 };
 
