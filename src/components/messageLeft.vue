@@ -12,6 +12,7 @@
       <div v-else-if="msg.type === leftMsg.msgType.file">
         <div class="fileMsg" @click="leftMsg.downloadAttach(msg.url)">
           {{ msg.filename }}<Icon class="icon" size="18" name="down" />
+
         </div>
       </div>
       <div v-else-if="msg.type === leftMsg.msgType.video">

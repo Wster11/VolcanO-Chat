@@ -59,6 +59,7 @@
           @click="chat.sendCustomMsg"
         />
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
+        <span @click="chat.sendMsgReadAck">ack</span>
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -143,6 +144,30 @@ export default class Contact extends Vue {
     const toChat = () => {
       router.push("/chat");
     };
+
+    // 获取历史消息
+    const getHistoryMsg = () => {
+      const options = {
+        queue: fromId.toLowerCase(),
+        isGroup: false,
+        count: 10,
+        format: true
+      };
+      conn.fetchHistoryMessages(options).then((res: any) => {
+        let uid = window.localStorage.getItem("uid");
+        res.forEach((item: any) => {
+          console.log(item, "item");
+          if (item.from === uid) {
+            item.from = "";
+          }
+          store.commit("IM/pushMessage", {
+            fromId: fromId,
+            message: item
+          });
+        });
+      });
+    };
+
     // 收到消息滚动到底部
     conn.addEventHandler("MESSAGE_SCROLL", {
       onTextMessage: () => {
@@ -157,13 +182,14 @@ export default class Contact extends Vue {
       let msg = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.txt,
+        // to: "170933540159489",
         to: fromId,
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息
       });
 
       deliverMsg(msg).then(() => {
-        console.log("发送成功");
+        console.log("发送成功", msg);
         store.commit("IM/pushMessage", { fromId, message: msg });
         const ipt: any = instance?.refs.ipt;
         ipt.ipt.clear();
@@ -351,9 +377,10 @@ export default class Contact extends Vue {
       let id =
         store.state.IM.chat[fromId]?.messageList[
           store.state.IM.chat[fromId]?.messageList.length - 1
-        ];
+        ].id;
       const readAckMsg = createMsg({
         type: MSG_TYPE.read,
+        chatType: CHAT_TYPE.singleChat,
         id,
         to: fromId
       });
@@ -363,9 +390,30 @@ export default class Contact extends Vue {
       });
     };
 
+    // 发送群组ack
+    const sendGroupMsgAck = () => {
+      let id =
+        store.state.IM.chat[fromId]?.messageList[
+          store.state.IM.chat[fromId]?.messageList.length - 1
+        ].id;
+      const readAckMsg = createMsg({
+        type: MSG_TYPE.read,
+        chatType: CHAT_TYPE.groupChat,
+        id,
+        to: "170933540159489",
+        ackContent: "21312321"
+      });
+      deliverMsg(readAckMsg).then((res) => {
+        console.log(res, "发送消息已读回执成功");
+      });
+    };
+
     onMounted(() => {
       // 发送会话已读回执
-      sendChatReadAck();
+      // sendChatReadAck();
+      if (!store.state.IM.chat[fromId] || store.state.IM.chat[fromId]?.messageList.length === 0) {
+        getHistoryMsg();
+      }
     });
 
     return {
@@ -385,7 +433,9 @@ export default class Contact extends Vue {
       sendCmdMsg,
       revokeMsg,
       sendChatReadAck,
-      sendMsgReadAck
+      sendMsgReadAck,
+      getHistoryMsg,
+      sendGroupMsgAck
     };
   });
 }

@@ -65,7 +65,11 @@ export default class App extends Vue {
         },
         onReadMessage: (message) => {
           console.log("收到消息已读回执消息了", message);
-        }
+        },
+        onStatisticMessage:(message)=>{
+           console.log("离线消息已读回执消息了", message);
+        },
+        
       });
       conn.addEventHandler("ERROR", {
         onError: (e) => {
