@@ -63,14 +63,24 @@ export default class App extends Vue {
         onChannelMessage: (message) => {
           console.log("收到会话已读回执消息了", message);
         },
+        onReceivedMessage: (message) => {
+          console.log("收到消息送达服务器消息了", message);
+        },
         onReadMessage: (message) => {
           console.log("收到消息已读回执消息了", message);
+          // conn.getGroupMsgReadUser({
+          //   msgId: message.mid as string, // 消息 ID
+          //   groupId: "170933540159489" // 群组 ID
+          // }).then((res)=>{
+          //   console.log(res, 'res777788888')
+          // });
         },
-        onStatisticMessage:(message)=>{
-           console.log("离线消息已读回执消息了", message);
+        onStatisticMessage: (message) => {
+          console.log("离线消息已读回执消息了", message);
         },
         
       });
+
       conn.addEventHandler("ERROR", {
         onError: (e) => {
           switch (e.message) {
