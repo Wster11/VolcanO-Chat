@@ -45,7 +45,7 @@
       </template>
     </Popover>
 
-    <div class="time">{{ rightMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
+    <div class="time">{{ rightMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}</div>
   </div>
 </template>
 

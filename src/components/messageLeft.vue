@@ -29,7 +29,7 @@
         <div>cmd消息 action: {{ msg.action }}</div>
       </div>
     </div>
-    <div class="time">{{ leftMsg.formatTime(timestamp, "hh:mm:ss") }}</div>
+    <div class="time">{{ leftMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}</div>
   </div>
 </template>
 
