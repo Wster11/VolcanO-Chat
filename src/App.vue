@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { RouterView, useRouter, Router } from "vue-router";
+import { Dialog, Toast } from "vant";
 import { onMounted } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
@@ -78,7 +79,27 @@ export default class App extends Vue {
         onStatisticMessage: (message) => {
           console.log("离线消息已读回执消息了", message);
         },
-        
+        onContactAgreed: (message) => {
+          Toast(`${message.from}已经同意您的好友申请`);
+        },
+        onContactRefuse: (message) => {
+          Toast(`${message.from}拒绝了您的好友申请`);
+        },
+        onContactDeleted: (message) => {
+          Toast(`${message.from}解除了与您的好友关系`);
+        },
+        onContactInvited: (message) => {
+          Dialog.confirm({
+            title: `${message.from}请求添加您为好友`,
+            message: message.status
+          })
+            .then(() => {
+              conn.acceptContactInvite(message.from);
+            })
+            .catch(() => {
+              conn.declineContactInvite(message.from);
+            });
+        }
       });
 
       conn.addEventHandler("ERROR", {

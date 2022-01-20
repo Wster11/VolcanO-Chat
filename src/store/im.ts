@@ -20,13 +20,15 @@ const im: Module<any, any> = {
       }
     },
     deleteMessage(state, { fromId, id }) {
-      const idx = state.chat[fromId].messageList.findIndex(
-        (item: EasemobChat.MessageBody) => {
-          return item.id === id;
+      if (state.chat[fromId]) {
+        const idx = state.chat[fromId].messageList.findIndex(
+          (item: EasemobChat.MessageBody) => {
+            return item.id === id;
+          }
+        );
+        if (idx > -1) {
+          state.chat[fromId].messageList.splice(idx, 1);
         }
-      );
-      if (idx > -1) {
-        state.chat[fromId].messageList.splice(idx, 1);
       }
     }
   }
