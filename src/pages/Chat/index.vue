@@ -87,7 +87,7 @@ import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
 import { deliverMsg, formatImFile, createMsg, recallMessage } from "@/utils/im";
-import { EasemobChat } from "easemob-websdk";
+import { EasemobChat } from "../../easemob";
 
 @Options({
   components: {
@@ -179,7 +179,7 @@ export default class Contact extends Vue {
 
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
-      let msg = createMsg({
+      let msg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.txt,
         // to: "170933540159489",
@@ -215,7 +215,7 @@ export default class Contact extends Vue {
       //   to: fromId
       // });
 
-      const imgMsg = createMsg({
+      const imgMsg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.img,
         to: fromId,
@@ -247,7 +247,7 @@ export default class Contact extends Vue {
 
     const afterReadAttach = (file: any) => {
       // 发送附件消息
-      const attachMsg = createMsg({
+      const attachMsg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.file,
         to: fromId,
@@ -279,7 +279,7 @@ export default class Contact extends Vue {
 
     const afterReadVideo = (file: any) => {
       // 发送视频消息
-      const videoMsg = createMsg({
+      const videoMsg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.video,
         to: fromId,
@@ -311,7 +311,7 @@ export default class Contact extends Vue {
 
     // 发送自定义消息
     const sendCustomMsg = () => {
-      const customMsg = createMsg({
+      const customMsg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.custom,
         to: fromId,
@@ -332,7 +332,7 @@ export default class Contact extends Vue {
 
     // 发送命令消息
     const sendCmdMsg = () => {
-      const cmdMsg = createMsg({
+      const cmdMsg: any = createMsg({
         chatType: CHAT_TYPE.singleChat,
         type: MSG_TYPE.cmd,
         to: fromId,
@@ -362,7 +362,7 @@ export default class Contact extends Vue {
 
     // 发送会话已读回执
     const sendChatReadAck = () => {
-      const readAckMsg = createMsg({
+      const readAckMsg: any = createMsg({
         type: MSG_TYPE.channel,
         chatType: CHAT_TYPE.singleChat,
         to: fromId
@@ -378,7 +378,7 @@ export default class Contact extends Vue {
         store.state.IM.chat[fromId]?.messageList[
           store.state.IM.chat[fromId]?.messageList.length - 1
         ].id;
-      const readAckMsg = createMsg({
+      const readAckMsg: any = createMsg({
         type: MSG_TYPE.read,
         chatType: CHAT_TYPE.singleChat,
         id,
@@ -396,7 +396,7 @@ export default class Contact extends Vue {
         store.state.IM.chat[fromId]?.messageList[
           store.state.IM.chat[fromId]?.messageList.length - 1
         ].id;
-      const readAckMsg = createMsg({
+      const readAckMsg: any = createMsg({
         type: MSG_TYPE.read,
         chatType: CHAT_TYPE.groupChat,
         id,
@@ -411,7 +411,10 @@ export default class Contact extends Vue {
     onMounted(() => {
       // 发送会话已读回执
       // sendChatReadAck();
-      if (!store.state.IM.chat[fromId] || store.state.IM.chat[fromId]?.messageList.length === 0) {
+      if (
+        !store.state.IM.chat[fromId] ||
+        store.state.IM.chat[fromId]?.messageList.length === 0
+      ) {
         getHistoryMsg();
       }
     });

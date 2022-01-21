@@ -1,5 +1,6 @@
 import { ERROR_CODE } from "@/const/errorCode";
-import websdk, { EasemobChat } from "easemob-websdk";
+import websdk from "agora-chat-sdk";
+import { EasemobChat } from "../easemob";
 import conn from "../initIm";
 import { Toast } from "vant";
 import { appKey } from "@/const/index";
