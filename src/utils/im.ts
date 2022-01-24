@@ -80,7 +80,9 @@ const formatSessionListTo = (from: string, to: string, chatType: CHAT_TYPE) => {
 // 获取store fromId
 const getMessageFromId = (message: any) => {
   const { to, from, chatType } = message;
-  return chatType === CHAT_TYPE.groupChat ? to : from;
+  return chatType === CHAT_TYPE.groupChat
+    ? `${chatType}${to}`
+    : `${chatType}${from}`;
 };
 
 export {

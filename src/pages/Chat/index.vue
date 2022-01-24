@@ -3,7 +3,8 @@
     <NavBar :title="chat.fromId" left-arrow @click-left="chat.toChat" />
     <div id="msgWrap">
       <div
-        v-for="item in chat.chatInfo[chat.fromId]?.messageList"
+        v-for="item in chat.chatInfo[`${chat.chatType}${chat.fromId}`]
+          ?.messageList"
         :key="item.id"
       >
         <MsgLeft
@@ -112,10 +113,11 @@ export default class Contact extends Vue {
     const fromId = route.params.fromId as string;
     const chatType = route.params.chatType as CHAT_TYPE;
     const emojiShow = ref(false);
+    const chatId = `${chatType}${fromId}`;
 
     const previewImage = (url: string) => {
       // TODO: 发送接收消息时push图片url,不要每次都获取
-      const imgMsgList = store.state.IM.chat[fromId]?.messageList
+      const imgMsgList = store.state.IM.chat[chatId]?.messageList
         .filter((item: EasemobChat.MessageBody) => {
           return item.type === MSG_TYPE.img;
         })
@@ -162,7 +164,7 @@ export default class Contact extends Vue {
             item.from = "";
           }
           store.commit("IM/pushMessage", {
-            fromId: fromId,
+            fromId: chatId,
             message: item
           });
         });
@@ -191,7 +193,10 @@ export default class Contact extends Vue {
 
       deliverMsg(msg).then(() => {
         console.log("发送成功", msg);
-        store.commit("IM/pushMessage", { fromId, message: msg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: msg
+        });
         const ipt: any = instance?.refs.ipt;
         ipt.ipt.clear();
         scrollToBottom(document.getElementById("msgWrap"));
@@ -238,7 +243,10 @@ export default class Contact extends Vue {
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
         console.log(imgMsg, "imgMsg");
-        store.commit("IM/pushMessage", { fromId, message: imgMsg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: imgMsg
+        });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -270,7 +278,10 @@ export default class Contact extends Vue {
 
       deliverMsg(attachMsg).then((res) => {
         console.log(attachMsg, "attachMsg");
-        store.commit("IM/pushMessage", { fromId, message: attachMsg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: attachMsg
+        });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -302,7 +313,10 @@ export default class Contact extends Vue {
 
       deliverMsg(videoMsg).then((res) => {
         console.log(videoMsg, "attachMsg");
-        store.commit("IM/pushMessage", { fromId, message: videoMsg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: videoMsg
+        });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -323,7 +337,10 @@ export default class Contact extends Vue {
       });
 
       deliverMsg(customMsg).then((res) => {
-        store.commit("IM/pushMessage", { fromId, message: customMsg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: customMsg
+        });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -341,7 +358,10 @@ export default class Contact extends Vue {
       });
 
       deliverMsg(cmdMsg).then((res) => {
-        store.commit("IM/pushMessage", { fromId, message: cmdMsg });
+        store.commit("IM/pushMessage", {
+          fromId: chatId,
+          message: cmdMsg
+        });
         setTimeout(() => {
           scrollToBottom(document.getElementById("msgWrap"));
         }, 200);
@@ -376,8 +396,8 @@ export default class Contact extends Vue {
     // 发送消息已读回执
     const sendMsgReadAck = () => {
       let id =
-        store.state.IM.chat[fromId]?.messageList[
-          store.state.IM.chat[fromId]?.messageList.length - 1
+        store.state.IM.chat[chatId]?.messageList[
+          store.state.IM.chat[chatId]?.messageList.length - 1
         ].id;
       const readAckMsg: any = createMsg({
         type: MSG_TYPE.read,
@@ -394,8 +414,8 @@ export default class Contact extends Vue {
     // 发送群组ack
     const sendGroupMsgAck = () => {
       let id =
-        store.state.IM.chat[fromId]?.messageList[
-          store.state.IM.chat[fromId]?.messageList.length - 1
+        store.state.IM.chat[chatId]?.messageList[
+          store.state.IM.chat[chatId]?.messageList.length - 1
         ].id;
       const readAckMsg: any = createMsg({
         type: MSG_TYPE.read,
@@ -412,9 +432,11 @@ export default class Contact extends Vue {
     onMounted(() => {
       // 发送会话已读回执
       // sendChatReadAck();
+      console.log( !store.state.IM.chat[chatId] ,
+        store.state.IM.chat[chatId])
       if (
-        !store.state.IM.chat[fromId] ||
-        store.state.IM.chat[fromId]?.messageList.length === 0
+        !store.state.IM.chat[chatId] ||
+        store.state.IM.chat[chatId]?.messageList.length === 0
       ) {
         getHistoryMsg();
       }
@@ -424,6 +446,7 @@ export default class Contact extends Vue {
       fromId: fromId,
       emojiShow,
       emojiLs: emojiLs,
+      chatType: chatType,
       chatInfo: store.state.IM.chat,
       toChat,
       sendMsg,
