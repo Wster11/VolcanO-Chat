@@ -3,8 +3,10 @@ import { appKey } from "@/const/index";
 
 const conn = new websdk.connection({
   appKey,
-  isHttpDNS: true,
-  delivery: true
+  delivery: true,
+  url: `${window.location.protocol}//im-api-v2-hsb.easemob.com/ws`,
+  apiUrl: `${window.location.protocol}//a1-hsb.easemob.com`,
+  isHttpDNS: false
   // useOwnUploadFun: true
 });
 

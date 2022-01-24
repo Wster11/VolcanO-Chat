@@ -1,5 +1,7 @@
 const appKey: string = "easemob-demo#easeim";
 
+const GROUP_SESSION = "conference"; // 会话列表群组标识
+
 enum MSG_TYPE {
   read = "read",
   delivery = "delivery",
@@ -21,8 +23,8 @@ enum CHAT_TYPE {
 }
 
 enum MSG_OPT_TYPE {
-  recall = "撤回",
+  recall = "撤回"
   // read = "已读"
 }
 
-export { appKey, MSG_TYPE, CHAT_TYPE, MSG_OPT_TYPE };
+export { appKey, GROUP_SESSION, MSG_TYPE, CHAT_TYPE, MSG_OPT_TYPE };

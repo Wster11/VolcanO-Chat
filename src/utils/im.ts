@@ -3,7 +3,7 @@ import websdk from "agora-chat-sdk";
 import { EasemobChat } from "../easemob";
 import conn from "../initIm";
 import { Toast } from "vant";
-import { appKey } from "@/const/index";
+import { appKey, GROUP_SESSION } from "@/const/index";
 
 // 发送消息
 const deliverMsg = (msg: EasemobChat.MessageBody) => {
@@ -62,8 +62,18 @@ const formatImFile = (file: File) => {
 // 格式化会话列表to, 获取用户ID
 const formatSessionListTo = (from: string, to: string) => {
   const uid = window.localStorage.getItem("uid");
+  const isGroupChat = to.indexOf(GROUP_SESSION) > -1;
   const fromUid = from.split(`${appKey}_`)[1].split("@easemob.com")[0];
-  const toUid = to.split(`${appKey}_`)[1].split("@easemob.com")[0];
+  let toUid = "";
+  if (isGroupChat) {
+    // 如果是群组
+    toUid = to.split(`${appKey}_`)[1].split(`@${GROUP_SESSION}.easemob.com`)[0];
+  } else {
+    toUid = to.split(`${appKey}_`)[1].split("@easemob.com")[0];
+  }
+  if (isGroupChat) {
+    return `Group: ${toUid}`;
+  }
   return uid === fromUid ? toUid : fromUid;
 };
 
