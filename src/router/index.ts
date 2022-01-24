@@ -23,7 +23,7 @@ const routes = [
     ]
   },
   {
-    path: "/chat/to/:fromId",
+    path: "/chat/to/:chatType/:fromId",
     name: "chatDetail",
     component: () => import("@/pages/Chat/index.vue")
   },

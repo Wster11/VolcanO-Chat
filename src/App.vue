@@ -10,6 +10,7 @@ import { onMounted } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
+import { getMessageFromId } from "@/utils/im";
 
 @Options({
   components: {
@@ -29,31 +30,49 @@ export default class App extends Vue {
 
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
         },
         onImageMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
           console.log("收到图片消息了", message);
         },
         onFileMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
           console.log("收到附件消息了", message);
         },
         onVideoMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
           console.log("收到视频消息了", message);
         },
         onCustomMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
           console.log("收到自定义消息了", message);
         },
         onCmdMessage: (message) => {
-          store.commit("IM/pushMessage", { fromId: message.from, message });
+          store.commit("IM/pushMessage", {
+            fromId: getMessageFromId(message),
+            message
+          });
           console.log("收到命令消息了", message);
         },
         onRecallMessage: (message) => {
           store.commit("IM/deleteMessage", {
-            fromId: message.from,
+            fromId: getMessageFromId(message),
             id: message.mid
           });
           console.log("收到撤回消息了", message);

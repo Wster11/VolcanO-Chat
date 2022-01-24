@@ -3,7 +3,7 @@ import websdk from "agora-chat-sdk";
 import { EasemobChat } from "../easemob";
 import conn from "../initIm";
 import { Toast } from "vant";
-import { appKey, GROUP_SESSION } from "@/const/index";
+import { appKey, GROUP_SESSION, CHAT_TYPE } from "@/const/index";
 
 // 发送消息
 const deliverMsg = (msg: EasemobChat.MessageBody) => {
@@ -60,9 +60,9 @@ const formatImFile = (file: File) => {
 };
 
 // 格式化会话列表to, 获取用户ID
-const formatSessionListTo = (from: string, to: string) => {
+const formatSessionListTo = (from: string, to: string, chatType: CHAT_TYPE) => {
   const uid = window.localStorage.getItem("uid");
-  const isGroupChat = to.indexOf(GROUP_SESSION) > -1;
+  const isGroupChat = chatType === CHAT_TYPE.groupChat;
   const fromUid = from.split(`${appKey}_`)[1].split("@easemob.com")[0];
   let toUid = "";
   if (isGroupChat) {
@@ -72,9 +72,15 @@ const formatSessionListTo = (from: string, to: string) => {
     toUid = to.split(`${appKey}_`)[1].split("@easemob.com")[0];
   }
   if (isGroupChat) {
-    return `Group: ${toUid}`;
+    return toUid;
   }
   return uid === fromUid ? toUid : fromUid;
+};
+
+// 获取store fromId
+const getMessageFromId = (message: any) => {
+  const { to, from, chatType } = message;
+  return chatType === CHAT_TYPE.groupChat ? to : from;
 };
 
 export {
@@ -82,5 +88,6 @@ export {
   formatImFile,
   createMsg,
   recallMessage,
-  formatSessionListTo
+  formatSessionListTo,
+  getMessageFromId
 };

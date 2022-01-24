@@ -110,6 +110,7 @@ export default class Contact extends Vue {
     const conn = store.state.IM.connect;
     const instance = getCurrentInstance();
     const fromId = route.params.fromId as string;
+    const chatType = route.params.chatType as CHAT_TYPE;
     const emojiShow = ref(false);
 
     const previewImage = (url: string) => {
@@ -180,7 +181,7 @@ export default class Contact extends Vue {
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
       let msg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.txt,
         // to: "170933540159489",
         to: fromId,
@@ -209,14 +210,14 @@ export default class Contact extends Vue {
       // 直接发送图片URL(用户自行上传图片到自己的服务器)
       // Web端需要在 WebIMConfig.js中 设置 useOwnUploadFun: true
       // const imgMsg = createMsg({
-      //   chatType: CHAT_TYPE.singleChat,
+      //   chatType: chatType,
       //   type: MSG_TYPE.img,
       //   url: "https://www.easemob.com/statics/common/images/logo.png?20211109",
       //   to: fromId
       // });
 
       const imgMsg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.img,
         to: fromId,
         file: formatImFile(file.file) as any,
@@ -248,7 +249,7 @@ export default class Contact extends Vue {
     const afterReadAttach = (file: any) => {
       // 发送附件消息
       const attachMsg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.file,
         to: fromId,
         filename: file.file.name,
@@ -280,7 +281,7 @@ export default class Contact extends Vue {
     const afterReadVideo = (file: any) => {
       // 发送视频消息
       const videoMsg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.video,
         to: fromId,
         filename: file.file.name,
@@ -312,7 +313,7 @@ export default class Contact extends Vue {
     // 发送自定义消息
     const sendCustomMsg = () => {
       const customMsg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.custom,
         to: fromId,
         customEvent: "RED_PACKAGE",
@@ -333,7 +334,7 @@ export default class Contact extends Vue {
     // 发送命令消息
     const sendCmdMsg = () => {
       const cmdMsg: any = createMsg({
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         type: MSG_TYPE.cmd,
         to: fromId,
         action: "refresh"
@@ -352,7 +353,7 @@ export default class Contact extends Vue {
       const options = {
         mid: id,
         to: fromId,
-        chatType: CHAT_TYPE.singleChat
+        chatType: chatType
       };
       recallMessage(options).then((res) => {
         store.commit("IM/deleteMessage", { fromId, id });
@@ -364,7 +365,7 @@ export default class Contact extends Vue {
     const sendChatReadAck = () => {
       const readAckMsg: any = createMsg({
         type: MSG_TYPE.channel,
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType,
         to: fromId
       });
       deliverMsg(readAckMsg).then((res) => {
@@ -380,7 +381,7 @@ export default class Contact extends Vue {
         ].id;
       const readAckMsg: any = createMsg({
         type: MSG_TYPE.read,
-        chatType: CHAT_TYPE.singleChat,
+        chatType: chatType as CHAT_TYPE.singleChat | CHAT_TYPE.groupChat,
         id,
         to: fromId
       });

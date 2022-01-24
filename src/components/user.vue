@@ -1,27 +1,32 @@
 <template>
-  <div class="userWrap" @click="user.toContact(name)">
+  <div class="userWrap" @click="user.toContact(name, chatType)">
     <div class="avatar"></div>
-    <span>{{ name }}</span>
+    <span>{{
+      chatType === user.CHAT_TYPE.groupChat ? `Group: ${name}` : name
+    }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router } from "vue-router";
+import { CHAT_TYPE } from "@/const";
 
 @Options({
   props: {
-    name: String
+    name: String,
+    chatType: CHAT_TYPE
   }
 })
 export default class Home extends Vue {
   user = setup(() => {
     const router: Router = useRouter();
-    const toContact = (id: string) => {
-      router.push(`/chat/to/${id}`);
+    const toContact = (id: string, type: CHAT_TYPE) => {
+      router.push(`/chat/to/${type}/${id}`);
     };
     return {
-      toContact
+      toContact,
+      CHAT_TYPE
     };
   });
 }

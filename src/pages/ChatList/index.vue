@@ -20,7 +20,10 @@
       <User
         v-for="item in chat.chatList"
         :key="item"
-        :name="chat.formatSessionListTo(item.meta.from, item.meta.to)"
+        :chatType="item.chatType"
+        :name="
+          chat.formatSessionListTo(item.meta.from, item.meta.to, item.chatType)
+        "
       />
     </div>
   </div>
@@ -34,6 +37,15 @@ import { NavBar, Icon, Popover } from "vant";
 import User from "@/components/user.vue";
 import { EasemobChat } from "easemob-websdk";
 import { formatSessionListTo } from "@/utils/im";
+import { CHAT_TYPE, GROUP_SESSION } from "@/const";
+
+interface SessionInfoWithType extends EasemobChat.SessionInfo {
+  chatType?: string;
+}
+
+interface ChannelInfo {
+  channel_infos: SessionInfoWithType[];
+}
 
 interface Actions {
   text: string;
@@ -53,10 +65,6 @@ export default class Home extends Vue {
     const chatList = ref<Array<EasemobChat.SessionInfo>>([]);
     const showPopover = ref(false);
 
-    interface ChannelInfo {
-      channel_infos: EasemobChat.SessionInfo[];
-    }
-
     // 通过 actions 属性来定义菜单选项
     const actions: Array<Actions> = [
       { text: "添加好友" },
@@ -71,6 +79,12 @@ export default class Home extends Vue {
       store.state.IM.connect
         .getSessionList()
         .then((res: EasemobChat.AsyncResult<ChannelInfo>) => {
+          res.data?.channel_infos.forEach((item) => {
+            item.chatType =
+              item.meta.to.indexOf(GROUP_SESSION) > -1
+                ? CHAT_TYPE.groupChat
+                : CHAT_TYPE.singleChat;
+          });
           chatList.value = res.data?.channel_infos || [];
         });
     });
