@@ -60,7 +60,7 @@
           @click="chat.sendCustomMsg"
         />
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
-        <span @click="chat.sendMsgReadAck">ack</span>
+        <span @click="chat.sendAck">ack</span>
       </div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
@@ -376,7 +376,7 @@ export default class Contact extends Vue {
         chatType: chatType
       };
       recallMessage(options).then((res) => {
-        store.commit("IM/deleteMessage", { fromId, id });
+        store.commit("IM/deleteMessage", { fromId: chatId, id });
         console.log(res, "撤回消息成功");
       });
     };
@@ -421,19 +421,25 @@ export default class Contact extends Vue {
         type: MSG_TYPE.read,
         chatType: CHAT_TYPE.groupChat,
         id,
-        to: "170933540159489",
-        ackContent: "21312321"
+        to: fromId,
+        ackContent: "group ack content"
       });
       deliverMsg(readAckMsg).then((res) => {
         console.log(res, "发送消息已读回执成功");
       });
     };
 
+    const sendAck = () => {
+      if (chatType === CHAT_TYPE.groupChat) {
+        sendGroupMsgAck();
+      } else {
+        sendMsgReadAck();
+      }
+    };
+
     onMounted(() => {
       // 发送会话已读回执
       // sendChatReadAck();
-      console.log( !store.state.IM.chat[chatId] ,
-        store.state.IM.chat[chatId])
       if (
         !store.state.IM.chat[chatId] ||
         store.state.IM.chat[chatId]?.messageList.length === 0
@@ -462,7 +468,8 @@ export default class Contact extends Vue {
       sendChatReadAck,
       sendMsgReadAck,
       getHistoryMsg,
-      sendGroupMsgAck
+      sendGroupMsgAck,
+      sendAck
     };
   });
 }
