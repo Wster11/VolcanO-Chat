@@ -150,7 +150,7 @@ export default class Contact extends Vue {
     const getHistoryMsg = () => {
       const options = {
         queue: fromId.toLowerCase(),
-        isGroup: false,
+        isGroup: chatType === CHAT_TYPE.groupChat,
         count: 10,
         format: true
       };

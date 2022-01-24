@@ -9,6 +9,7 @@
       trigger="manual"
     >
       <template #reference>
+        <div class="user">{{ rightMsg.uid }}</div>
         <div
           class="messageItem"
           @touchstart="rightMsg.showMenu"
@@ -45,7 +46,9 @@
       </template>
     </Popover>
 
-    <div class="time">{{ rightMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}</div>
+    <div class="time">
+      {{ rightMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}
+    </div>
   </div>
 </template>
 
@@ -75,6 +78,7 @@ export default class MessageRight extends Vue {
     const downloadAttach = (url: string) => {
       window.open(url);
     };
+    const uid = localStorage.getItem("uid");
 
     const isShowMenu = ref(false);
 
@@ -101,6 +105,7 @@ export default class MessageRight extends Vue {
       actions,
       msgType: MSG_TYPE,
       isShowMenu,
+      uid,
       formatTime,
       onSelect,
       previewImg,
@@ -113,6 +118,9 @@ export default class MessageRight extends Vue {
 </script>
 
 <style lang="less" scoped>
+.user {
+  margin-bottom: 10px;
+}
 .messageItemWrap {
   text-align: right;
   margin-bottom: 10px;

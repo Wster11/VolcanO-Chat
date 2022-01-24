@@ -1,5 +1,6 @@
 <template>
   <div class="messageItemWrap">
+    <div class="user">{{ msg.from }}</div>
     <div class="messageItem">
       <div v-if="msg.type === leftMsg.msgType.txt" v-html="msg.msg"></div>
       <div v-else-if="msg.type === leftMsg.msgType.img">
@@ -12,7 +13,6 @@
       <div v-else-if="msg.type === leftMsg.msgType.file">
         <div class="fileMsg" @click="leftMsg.downloadAttach(msg.url)">
           {{ msg.filename }}<Icon class="icon" size="18" name="down" />
-
         </div>
       </div>
       <div v-else-if="msg.type === leftMsg.msgType.video">
@@ -29,7 +29,9 @@
         <div>cmd消息 action: {{ msg.action }}</div>
       </div>
     </div>
-    <div class="time">{{ leftMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}</div>
+    <div class="time">
+      {{ leftMsg.formatTime(timestamp, "YYYY-MM-DD hh:mm:ss") }}
+    </div>
   </div>
 </template>
 
@@ -68,6 +70,9 @@ export default class MessageLeft extends Vue {
 </script>
 
 <style lang="less" scoped>
+.user {
+  margin-bottom: 10px;
+}
 .messageItemWrap {
   text-align: left;
   margin-bottom: 10px;
