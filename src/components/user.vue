@@ -11,7 +11,8 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router } from "vue-router";
 import { CHAT_TYPE } from "@/const";
-
+import { onMounted, getCurrentInstance } from "vue";
+import { useStore } from "vuex";
 @Options({
   props: {
     name: String,
@@ -20,10 +21,27 @@ import { CHAT_TYPE } from "@/const";
 })
 export default class Home extends Vue {
   user = setup(() => {
+    const store = useStore();
     const router: Router = useRouter();
+    const context = getCurrentInstance();
     const toContact = (id: string, type: CHAT_TYPE) => {
       router.push(`/chat/to/${type}/${id}`);
     };
+
+    const getUserInfo = () => {
+      if (context?.props.chatType === CHAT_TYPE.singleChat) {
+        store.state.IM.connect
+          .fetchUserInfoById(context?.props.name)
+          .then((res: any) => {
+            console.log(res, "res");
+          });
+      }
+    };
+
+    onMounted(() => {
+      getUserInfo()
+    });
+
     return {
       toContact,
       CHAT_TYPE

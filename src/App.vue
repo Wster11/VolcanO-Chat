@@ -11,6 +11,7 @@ import { useStore } from "vuex";
 import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
 import { getMessageFromId } from "@/utils/im";
+import { CHAT_TYPE } from "./const";
 
 @Options({
   components: {
@@ -71,8 +72,14 @@ export default class App extends Vue {
           console.log("收到命令消息了", message);
         },
         onRecallMessage: (message) => {
+          // 撤回消息没有chatType, 所以单聊群组都查一下,然后删除
           store.commit("IM/deleteMessage", {
-            fromId: getMessageFromId(message),
+            fromId: `${CHAT_TYPE.singleChat}${message.from}`,
+            id: message.mid
+          });
+
+          store.commit("IM/deleteMessage", {
+            fromId: `${CHAT_TYPE.groupChat}${message.to}`,
             id: message.mid
           });
           console.log("收到撤回消息了", message);
