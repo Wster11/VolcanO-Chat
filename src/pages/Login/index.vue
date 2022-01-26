@@ -37,9 +37,9 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { Form, Field, CellGroup, Button, Toast } from "vant";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { ERROR_CODE } from "@/const/errorCode";
 import { EasemobChat } from "easemob-websdk";
 
@@ -66,7 +66,6 @@ export default class Login extends Vue {
     const store = useStore();
     const username = ref<string>("");
     const password = ref<string>("");
-    const route = useRoute();
     const router = useRouter();
 
     let loading = ref<boolean>(false);
@@ -93,15 +92,6 @@ export default class Login extends Vue {
     const onSubmit = (params: LoginFormParams): void => {
       login(params);
     };
-    onMounted(() => {
-      console.log(route.query.id, "route");
-      const id = route.query.id;
-      // 暂时自动登录
-      login({
-        user: id,
-        pwd: id
-      });
-    });
 
     return {
       username,
