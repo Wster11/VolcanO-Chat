@@ -1,6 +1,7 @@
 <template>
   <div class="userWrap" @click="user.toContact(name, chatType)">
     <div
+      v-if="user.info.success"
       class="avatar defaultAvatar"
       :style="
         user.info.avatarurl
@@ -42,7 +43,13 @@ export default class Home extends Vue {
     const getUserInfo = () => {
       if (context?.props.chatType === CHAT_TYPE.singleChat) {
         conn.fetchUserInfoById(context?.props.name).then((res: InfoRes) => {
-          Object.assign(info, res.data[context?.props.name as string]);
+          Object.assign(info, res.data[context?.props.name as string], {
+            success: true
+          });
+        });
+      } else {
+        Object.assign(info, {
+          success: true
         });
       }
     };
