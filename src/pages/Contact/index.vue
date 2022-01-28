@@ -13,7 +13,7 @@
       >
         <template #button>
           <Button type="primary" size="small" @click="contact.getFriendList"
-            >查询好友列表</Button
+            >查询</Button
           >
         </template>
       </Field>
@@ -48,6 +48,53 @@
         </template>
       </Field>
     </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="contact.blockStr"
+        rows="1"
+        autosize
+        label="黑名单列表"
+        type="textarea"
+        center
+        placeholder="黑名单"
+      >
+        <template #button>
+          <Button type="primary" size="small" @click="contact.getBlockList"
+            >查看</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="contact.blockId"
+        center
+        clearable
+        label="加入黑名单"
+        placeholder="请输入好友ID"
+      >
+        <template #button>
+          <Button size="small" type="primary" @click="contact.addBlock"
+            >加入</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="contact.delBlockId"
+        center
+        clearable
+        label="移除黑名单"
+        placeholder="请输入好友ID"
+      >
+        <template #button>
+          <Button size="small" type="danger" @click="contact.delBlock"
+            >移除</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
   </div>
 </template>
 
@@ -70,10 +117,19 @@ export default class Contact extends Vue {
     let userStr = ref("");
     let userID = ref("");
     let delUserID = ref("");
+    let blockStr = ref("");
+    let blockId = ref("");
+    let delBlockId = ref("");
 
     const getFriendList = () => {
       store.state.IM.connect.getContacts().then((res: any) => {
         userStr.value = res.data.join("、");
+      });
+    };
+
+    const getBlockList = () => {
+      store.state.IM.connect.getBlacklist().then((res: any) => {
+        blockStr.value = res.data.join("、");
       });
     };
 
@@ -83,17 +139,36 @@ export default class Contact extends Vue {
       Toast("发送好友请求成功");
     };
 
+    const addBlock = () => {
+      store.state.IM.connect.addToBlackList({
+        name: blockId.value
+      });
+      Toast(`将${blockId.value}加入黑名单成功`);
+    };
+
     const delFriend = () => {
       store.state.IM.connect.deleteContact(delUserID.value);
+    };
+
+    const delBlock = () => {
+      store.state.IM.connect.removeFromBlackList({
+        name: delBlockId.value
+      });
     };
 
     return {
       userStr,
       userID,
       delUserID,
+      blockStr,
+      blockId,
+      delBlockId,
       getFriendList,
       addFriend,
-      delFriend
+      delFriend,
+      getBlockList,
+      addBlock,
+      delBlock
     };
   });
 }
