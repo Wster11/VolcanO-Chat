@@ -3,23 +3,6 @@
     <NavBar title="Contact" />
     <CellGroup inset>
       <Field
-        v-model="contact.userStr"
-        rows="1"
-        autosize
-        label="好友列表"
-        type="textarea"
-        center
-        placeholder="好友"
-      >
-        <template #button>
-          <Button type="primary" size="small" @click="contact.getFriendList"
-            >查询</Button
-          >
-        </template>
-      </Field>
-    </CellGroup>
-    <CellGroup inset>
-      <Field
         v-model="contact.userID"
         center
         clearable
@@ -95,6 +78,16 @@
         </template>
       </Field>
     </CellGroup>
+    <div class="contactItemWrap">
+      <span class="title">好友列表</span>
+      <br />
+      <ContactItem
+        v-for="item in contact.userStr.split('、')"
+        :key="item"
+        :name="item"
+        chatType="singleChat"
+      />
+    </div>
   </div>
 </template>
 
@@ -102,13 +95,15 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import ContactItem from "./contactItem.vue";
 @Options({
   components: {
     NavBar,
     Button,
     CellGroup,
-    Field
+    Field,
+    ContactItem
   }
 })
 export default class Contact extends Vue {
@@ -156,6 +151,10 @@ export default class Contact extends Vue {
       });
     };
 
+    onMounted(() => {
+      getFriendList();
+    });
+
     return {
       userStr,
       userID,
@@ -177,7 +176,12 @@ export default class Contact extends Vue {
 <style lang="less" scoped>
 .title {
   color: #000;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
+  margin-bottom: 10px;
+}
+.contactItemWrap {
+  padding: 0 30px;
+  text-align: left;
 }
 </style>

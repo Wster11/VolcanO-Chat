@@ -30,7 +30,7 @@ const recallMessage = (options: any) => {
   return new Promise((resolve, reject) => {
     conn
       .recallMessage(options)
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
       .catch((e: any) => {

@@ -25,6 +25,7 @@
           chat.formatSessionListTo(item.meta.from, item.meta.to, item.chatType)
         "
       />
+      <Empty v-if="!chat.chatList.length" description="会话列表为空" />
     </div>
   </div>
 </template>
@@ -33,7 +34,7 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
-import { NavBar, Icon, Popover } from "vant";
+import { NavBar, Icon, Popover, Empty } from "vant";
 import User from "@/components/user.vue";
 import { EasemobChat } from "easemob-websdk";
 import { formatSessionListTo } from "@/utils/im";
@@ -56,7 +57,8 @@ interface Actions {
     User,
     NavBar,
     Icon,
-    Popover
+    Popover,
+    Empty
   }
 })
 export default class Home extends Vue {
