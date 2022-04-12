@@ -1,7 +1,6 @@
 <template>
   <div class="userWrap" @click="user.toContact(name, chatType)">
     <div
-      v-if="user.info.success"
       class="avatar defaultAvatar"
       :style="
         user.info.avatarurl
