@@ -1,4 +1,4 @@
-import websdk from "agora-chat-sdk";
+import websdk from "easemob-websdk";
 import { appKey } from "@/const/index";
 
 const conn = new websdk.connection({
@@ -10,4 +10,5 @@ const conn = new websdk.connection({
   // useOwnUploadFun: true
 });
 
+console.log(conn.getSessionList)
 export default conn;
