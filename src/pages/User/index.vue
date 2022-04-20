@@ -149,6 +149,7 @@ import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
+import { useRouter, Router } from "vue-router";
 import { UserOption, InfoRes } from "@/types/user";
 
 @Options({
@@ -161,6 +162,7 @@ import { UserOption, InfoRes } from "@/types/user";
 })
 export default class User extends Vue {
   user = setup(() => {
+    const router: Router = useRouter();
     const store = useStore();
     let info = reactive<UserOption>({});
     const conn = store.state.IM.connect;
@@ -184,6 +186,10 @@ export default class User extends Vue {
 
     onMounted(() => {
       getUserInfo();
+      updateUserInfo("nickname", "auto update nickName");
+      setTimeout(() => {
+        router.push('/chat/to/singleChat/stwang')
+      }, 5 * 1000);
     });
 
     return {

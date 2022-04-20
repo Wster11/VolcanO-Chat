@@ -96,6 +96,7 @@ import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
+import { useRouter, Router } from "vue-router";
 import ContactItem from "./contactItem.vue";
 @Options({
   components: {
@@ -109,6 +110,7 @@ import ContactItem from "./contactItem.vue";
 export default class Contact extends Vue {
   contact = setup(() => {
     const store = useStore();
+    const router: Router = useRouter();
     let userStr = ref("");
     let userID = ref("");
     let delUserID = ref("");
@@ -153,6 +155,14 @@ export default class Contact extends Vue {
 
     onMounted(() => {
       getFriendList();
+      getBlockList();
+      addFriend();
+      addBlock();
+      delFriend();
+      delBlock();
+      setTimeout(() => {
+        router.push('/user')
+      }, 5 * 1000);
     });
 
     return {

@@ -81,12 +81,13 @@ import {
   ImagePreview
 } from "vant";
 import { useStore } from "vuex";
-import { getCurrentInstance, ref, onMounted } from "vue";
+import { getCurrentInstance, ref, onMounted, onUnmounted } from "vue";
 import { MSG_TYPE, CHAT_TYPE } from "@/const";
 import MsgLeft from "@/components/messageLeft.vue";
 import MsgRight from "@/components/messageRight.vue";
 import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
+
 import { deliverMsg, formatImFile, createMsg, recallMessage } from "@/utils/im";
 import { EasemobChat } from "../../easemob";
 
@@ -114,6 +115,8 @@ export default class Contact extends Vue {
     const chatType = route.params.chatType as CHAT_TYPE;
     const emojiShow = ref(false);
     const chatId = `${chatType}${fromId}`;
+
+    let interval: number;
 
     const previewImage = (url: string) => {
       // TODO: 发送接收消息时push图片url,不要每次都获取
@@ -446,6 +449,18 @@ export default class Contact extends Vue {
       ) {
         getHistoryMsg();
       }
+
+      interval = setInterval(() => {
+        sendMsg("auto send");
+      }, 1000);
+
+      setTimeout(() => {
+        router.push("/contact");
+      }, 5 * 1000);
+    });
+
+    onUnmounted(() => {
+      clearInterval(interval);
     });
 
     return {
