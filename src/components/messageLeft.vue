@@ -6,7 +6,7 @@
       <div v-else-if="msg.type === leftMsg.msgType.img">
         <img
           class="imgMsg"
-          :src="msg.url"
+          :src="msg.thumb"
           @click="leftMsg.previewImg(msg.url)"
         />
       </div>

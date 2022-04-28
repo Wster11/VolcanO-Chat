@@ -6,8 +6,8 @@ const conn = new websdk.connection({
   delivery: true,
   url: `${window.location.protocol}//im-api-v2-hsb.easemob.com/ws`,
   apiUrl: `${window.location.protocol}//a1-hsb.easemob.com`,
-  isHttpDNS: false
-  // useOwnUploadFun: true
+  // isHttpDNS: false
+  useOwnUploadFun: true
 });
 
 export default conn;
