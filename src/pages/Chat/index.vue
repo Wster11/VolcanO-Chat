@@ -212,34 +212,34 @@ export default class Contact extends Vue {
       ipt.ipt.mergeTxt(emojiStr);
     };
 
-    const afterReadImg = () => {
+    const afterReadImg = (file:any) => {
       // 直接发送图片URL(用户自行上传图片到自己的服务器)
       // Web端需要在 WebIMConfig.js中 设置 useOwnUploadFun: true
-      const imgMsg:any = createMsg({
-        chatType: chatType,
-        type: MSG_TYPE.img,
-        url: "https://www.easemob.com/statics/common/images/logo.png?20211109",
-        to: fromId
-      });
-
-      // const imgMsg: any = createMsg({
+      // const imgMsg:any = createMsg({
       //   chatType: chatType,
       //   type: MSG_TYPE.img,
-      //   to: fromId,
-      //   file: formatImFile(file.file) as any,
-      //   onFileUploadError: function () {
-      //     // 消息上传失败
-      //     console.log("onFileUploadError");
-      //   },
-      //   onFileUploadProgress: function (progress) {
-      //     // 上传进度的回调
-      //     console.log(progress);
-      //   },
-      //   onFileUploadComplete: function () {
-      //     // 消息上传成功
-      //     console.log("onFileUploadComplete");
-      //   }
+      //   url: "https://www.easemob.com/statics/common/images/logo.png?20211109",
+      //   to: fromId
       // });
+
+      const imgMsg: any = createMsg({
+        chatType: chatType,
+        type: MSG_TYPE.img,
+        to: fromId,
+        file: formatImFile(file.file) as any,
+        onFileUploadError: function () {
+          // 消息上传失败
+          console.log("onFileUploadError");
+        },
+        onFileUploadProgress: function (progress) {
+          // 上传进度的回调
+          console.log(progress);
+        },
+        onFileUploadComplete: function () {
+          // 消息上传成功
+          console.log("onFileUploadComplete");
+        }
+      });
 
       // 发送图片消息
       deliverMsg(imgMsg).then((res) => {
