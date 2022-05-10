@@ -22,10 +22,10 @@ export default class App extends Vue {
   app = setup(() => {
     const router: Router = useRouter();
     onMounted(() => {
-      document.oncontextmenu = function (e) {
-        // 禁用浏览器菜单
-        e.preventDefault();
-      };
+      // document.oncontextmenu = function (e) {
+      //   // 禁用浏览器菜单
+      //   e.preventDefault();
+      // };
       const store = useStore();
       store.commit("IM/setConnect", conn);
 
@@ -140,6 +140,7 @@ export default class App extends Vue {
         }
       });
     });
+    
     return {};
   });
 }

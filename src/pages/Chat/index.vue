@@ -117,6 +117,7 @@ export default class Contact extends Vue {
     const chatId = `${chatType}${fromId}`;
 
     let interval: number;
+    let timerId: number;
 
     const previewImage = (url: string) => {
       // TODO: 发送接收消息时push图片url,不要每次都获取
@@ -200,8 +201,8 @@ export default class Contact extends Vue {
           fromId: chatId,
           message: msg
         });
-        const ipt: any = instance?.refs.ipt;
-        ipt.ipt.clear();
+        // const ipt: any = instance?.refs.ipt;
+        // ipt.ipt.clear();
         scrollToBottom(document.getElementById("msgWrap"));
       });
     };
@@ -454,13 +455,14 @@ export default class Contact extends Vue {
         sendMsg("auto send");
       }, 1000);
 
-      setTimeout(() => {
+      timerId = setTimeout(() => {
         router.push("/contact");
       }, 5 * 1000);
     });
 
     onUnmounted(() => {
       clearInterval(interval);
+      clearTimeout(timerId);
     });
 
     return {

@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { Form, Field, CellGroup, Button, Toast } from "vant";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { ERROR_CODE } from "@/const/errorCode";
@@ -77,7 +77,7 @@ export default class Login extends Vue {
         .open(opt)
         .then(() => {
           window.localStorage.setItem("uid", username.value);
-          router.push("/chat");
+          router.push("/chat/to/singleChat/sttest");
         })
         .catch((e: EasemobChat.ErrorEvent) => {
           if (e.message === ERROR_CODE.loginFailed) {
@@ -90,8 +90,16 @@ export default class Login extends Vue {
     };
 
     const onSubmit = (params: LoginFormParams): void => {
+      console.log(params, "params");
       login(params);
     };
+
+    onMounted(() => {
+      login({
+        user: "sttest",
+        pwd: 123456
+      });
+    });
 
     return {
       username,
