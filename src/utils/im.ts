@@ -6,7 +6,7 @@ import { Toast } from "vant";
 import { appKey, GROUP_SESSION, CHAT_TYPE } from "@/const/index";
 
 // 发送消息
-const deliverMsg = (msg: EasemobChat.MessageBody) => {
+const deliverMsg = (msg:any) => {
   return new Promise((resolve, reject) => {
     conn
       .send(msg)
