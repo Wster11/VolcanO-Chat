@@ -82,7 +82,6 @@ export default class Login extends Vue {
           router.push("/chat");
         })
         .catch((e: EasemobChat.ErrorEvent) => {
-          console.log(e, "eeee");
           if (e.message === ERROR_CODE.loginFailed) {
             Toast("用户名或密码错误");
           }

@@ -15,12 +15,13 @@
 </template>
 
 <script lang="ts">
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
 import { Options, Vue, setup } from "vue-class-component";
 import { useRouter, Router } from "vue-router";
 import { CHAT_TYPE } from "@/const";
 import { onMounted, getCurrentInstance, reactive } from "vue";
+import { AllState } from "../store";
 import { useStore } from "vuex";
-import { UserOption, InfoRes } from "@/types/user";
 
 @Options({
   props: {
@@ -30,10 +31,10 @@ import { UserOption, InfoRes } from "@/types/user";
 })
 export default class Home extends Vue {
   user = setup(() => {
-    const store = useStore();
+    const store = useStore<AllState>();
     const router: Router = useRouter();
     const context = getCurrentInstance();
-    const info = reactive<UserOption>({});
+    const info = reactive<EasemobChat.UpdateOwnUserInfoParams>({});
     const conn = store.state.IM.connect;
     const toContact = (id: string, type: CHAT_TYPE) => {
       router.push(`/chat/to/${type}/${id}`);
@@ -41,8 +42,8 @@ export default class Home extends Vue {
 
     const getUserInfo = () => {
       if (context?.props.chatType === CHAT_TYPE.singleChat) {
-        conn.fetchUserInfoById(context?.props.name).then((res: InfoRes) => {
-          Object.assign(info, res.data[context?.props.name as string], {
+        conn.fetchUserInfoById(context?.props.name as string).then((res) => {
+          Object.assign(info, res.data?.[context?.props.name as string], {
             success: true
           });
         });

@@ -144,36 +144,36 @@
 </template>
 
 <script lang="ts">
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
 import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
-import { UserOption, InfoRes } from "@/types/user";
-import {AllState} from '../../store'
-
-
+import { AllState } from "../../store";
 
 @Options({
   components: {
     NavBar,
     Button,
     CellGroup,
-    Field,
-  },
+    Field
+  }
 })
 export default class User extends Vue {
   user = setup(() => {
     const store = useStore<AllState>();
-    let info = reactive<UserOption>({});
+    let info = reactive<EasemobChat.UpdateOwnUserInfoParams>({});
     const conn = store.state.IM.connect;
     const getUserInfo = () => {
-      conn.fetchUserInfoById(conn.user).then((res: InfoRes) => {
-        Object.assign(info, res.data[conn.user]);
+      conn.fetchUserInfoById(conn.user).then((res) => {
+        Object.assign(info, res.data?.[conn.user]);
       });
     };
 
-    const updateUserInfo = (options: UserOption | string, value: string) => {
-      console.log(options, value);
+    const updateUserInfo = (
+      options: EasemobChat.UpdateOwnUserInfoParams,
+      value: string
+    ) => {
       conn
         .updateOwnUserInfo(options, value)
         .then(() => {
@@ -196,7 +196,7 @@ export default class User extends Vue {
       userId: conn.user,
       info: info,
       updateUserInfo,
-      logout,
+      logout
     };
   });
 }
