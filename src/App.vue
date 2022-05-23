@@ -21,7 +21,30 @@ import { CHAT_TYPE } from "./const";
 export default class App extends Vue {
   app = setup(() => {
     const router: Router = useRouter();
+    const imToken: string | null = localStorage.getItem("token");
+    const imUid: string | null = localStorage.getItem("uid");
+
+    const loginByToken = () => {
+      if (imToken && imUid) {
+        conn
+          .open({
+            accessToken: imToken,
+            user: imUid
+          })
+          .then(() => {
+            router.push("/chat");
+          })
+          .catch(() => {
+            router.push("/login");
+          });
+      } else {
+        router.push("/login");
+      }
+    };
+
     onMounted(() => {
+      loginByToken();
+
       document.oncontextmenu = function (e) {
         // 禁用浏览器菜单
         e.preventDefault();

@@ -79,7 +79,7 @@ export default class Home extends Vue {
   margin-right: 2vw;
 }
 .defaultAvatar {
-  background-image: url("../assets/avatar.jpeg");
+  background-image: url("../assets/avatar.png");
   background-size: 100%;
   background-position: center;
 }

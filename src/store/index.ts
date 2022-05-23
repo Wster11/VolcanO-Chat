@@ -1,5 +1,9 @@
 import { createStore } from "vuex";
-import IM from "./im";
+import IM, { IMState } from "./im";
+
+export interface AllState {
+  'IM': IMState
+}
 
 export default createStore({
   modules: {

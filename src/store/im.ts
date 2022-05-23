@@ -1,9 +1,18 @@
 import { Module } from "vuex";
 import { EasemobChat } from "easemob-websdk";
-const im: Module<any, any> = {
+
+interface ChatMap {
+  [key: string]: any;
+}
+export interface IMState {
+  connect: EasemobChat.Connection;
+  chat: ChatMap;
+}
+
+const im: Module<IMState, IMState> = {
   namespaced: true,
   state: {
-    connect: null,
+    connect: {} as EasemobChat.Connection,
     chat: {}
   },
   mutations: {

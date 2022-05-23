@@ -136,10 +136,9 @@
         >保存</Button
       >
       <br />
-      <p class="tip">
-        Tip:
-        设置用户属性时，可以设置用户的所有属性，也可以只设置用户的某一项属性
-      </p>
+      <Button type="default" size="small" @click="user.logout" block
+        >退出登录</Button
+      >
     </div>
   </div>
 </template>
@@ -150,18 +149,21 @@ import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
 import { UserOption, InfoRes } from "@/types/user";
+import {AllState} from '../../store'
+
+
 
 @Options({
   components: {
     NavBar,
     Button,
     CellGroup,
-    Field
-  }
+    Field,
+  },
 })
 export default class User extends Vue {
   user = setup(() => {
-    const store = useStore();
+    const store = useStore<AllState>();
     let info = reactive<UserOption>({});
     const conn = store.state.IM.connect;
     const getUserInfo = () => {
@@ -182,6 +184,10 @@ export default class User extends Vue {
         });
     };
 
+    const logout = () => {
+      conn.close();
+    };
+
     onMounted(() => {
       getUserInfo();
     });
@@ -189,7 +195,8 @@ export default class User extends Vue {
     return {
       userId: conn.user,
       info: info,
-      updateUserInfo
+      updateUserInfo,
+      logout,
     };
   });
 }

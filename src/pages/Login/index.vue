@@ -1,6 +1,6 @@
 <template>
   <div class="loginWrap">
-    <div class="wel">WELCOME</div>
+    <div class="wel">VolcanO</div>
     <Form @submit="login.onSubmit">
       <CellGroup inset>
         <Field
@@ -31,6 +31,7 @@
         </Button>
       </div>
     </Form>
+    <div class="toRegister" @click="login.toRegister">没有账号？去注册</div>
   </div>
 </template>
 
@@ -75,11 +76,13 @@ export default class Login extends Vue {
       loading.value = true;
       store.state.IM.connect
         .open(opt)
-        .then(() => {
+        .then((res: EasemobChat.LoginResult) => {
           window.localStorage.setItem("uid", username.value);
+          window.localStorage.setItem("token", res.accessToken);
           router.push("/chat");
         })
         .catch((e: EasemobChat.ErrorEvent) => {
+          console.log(e, "eeee");
           if (e.message === ERROR_CODE.loginFailed) {
             Toast("用户名或密码错误");
           }
@@ -93,10 +96,15 @@ export default class Login extends Vue {
       login(params);
     };
 
+    const toRegister = (): void => {
+      router.push('/register')
+    };
+
     return {
       username,
       password,
       loading,
+      toRegister,
       onSubmit
     };
   });
@@ -107,13 +115,24 @@ export default class Login extends Vue {
 <style scoped lang="less">
 .loginWrap {
   overflow: hidden;
-  background: seagreen;
+  background-image: url("../../assets/bg.png");
   height: 100%;
+  background-size: cover;
+  background-position: center center;
   .wel {
     margin-top: 20px;
     font-size: 28px;
     color: #fff;
     margin-bottom: 70px;
+  }
+  .toRegister {
+    margin: 0 20px;
+    text-align: right;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
+      color: #4187f2;
+    }
   }
 }
 </style>
