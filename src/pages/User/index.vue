@@ -150,6 +150,8 @@ import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
 import { AllState } from "../../store";
+import router from "@/router";
+
 
 @Options({
   components: {
@@ -159,7 +161,9 @@ import { AllState } from "../../store";
     Field
   }
 })
+
 export default class User extends Vue {
+
   user = setup(() => {
     const store = useStore<AllState>();
     let info = reactive<EasemobChat.UpdateOwnUserInfoParams>({});
@@ -186,6 +190,9 @@ export default class User extends Vue {
 
     const logout = () => {
       conn.close();
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("uid");
+      router.push("/login");
     };
 
     onMounted(() => {

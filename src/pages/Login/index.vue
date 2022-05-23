@@ -42,7 +42,7 @@ import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { ERROR_CODE } from "@/const/errorCode";
-import { EasemobChat } from "easemob-websdk";
+import { AllState } from "../../store";
 
 interface LoginFormParams {
   user: string;
@@ -64,7 +64,7 @@ interface LoginFormParams {
 })
 export default class Login extends Vue {
   login = setup(() => {
-    const store = useStore();
+    const store = useStore<AllState>();
     const username = ref<string>("");
     const password = ref<string>("");
     const router = useRouter();
@@ -76,14 +76,20 @@ export default class Login extends Vue {
       loading.value = true;
       store.state.IM.connect
         .open(opt)
-        .then((res: EasemobChat.LoginResult) => {
+        .then((res) => {
           window.localStorage.setItem("uid", username.value);
           window.localStorage.setItem("token", res.accessToken);
           router.push("/chat");
         })
-        .catch((e: EasemobChat.ErrorEvent) => {
-          if (e.message === ERROR_CODE.loginFailed) {
+        .catch((e) => {
+          let errInfo: any = {};
+          if (e.data.data) {
+            errInfo = JSON.parse(e.data.data);
+          }
+          if (errInfo.error_description === ERROR_CODE.invalidPassword) {
             Toast("用户名或密码错误");
+          } else if (errInfo.error_description === ERROR_CODE.userNotFound) {
+            Toast("用户不存在");
           }
         })
         .finally(() => {
@@ -96,7 +102,7 @@ export default class Login extends Vue {
     };
 
     const toRegister = (): void => {
-      router.push('/register')
+      router.push("/register");
     };
 
     return {
