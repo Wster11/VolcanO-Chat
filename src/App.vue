@@ -1,12 +1,12 @@
 <template>
-  <RouterView />
+  <RouterView v-if="app.isShowApp" />
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { RouterView, useRouter, Router } from "vue-router";
 import { Dialog, Toast } from "vant";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
@@ -21,6 +21,7 @@ import { CHAT_TYPE } from "./const";
 export default class App extends Vue {
   app = setup(() => {
     const router: Router = useRouter();
+    const isShowApp = ref(false);
     const imToken: string | null = localStorage.getItem("token");
     const imUid: string | null = localStorage.getItem("uid");
 
@@ -36,8 +37,12 @@ export default class App extends Vue {
           })
           .catch(() => {
             router.push("/login");
+          })
+          .finally(() => {
+            isShowApp.value = true;
           });
       } else {
+        isShowApp.value = true;
         router.push("/login");
       }
     };
@@ -163,7 +168,9 @@ export default class App extends Vue {
         }
       });
     });
-    return {};
+    return {
+      isShowApp
+    };
   });
 }
 </script>

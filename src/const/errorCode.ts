@@ -4,7 +4,8 @@ const ERROR_CODE = {
   notLogin: "not login",
   recallTimeout: "exceed recall time limit",
   userNotFound: "user not found",
-  invalidPassword: "invalid password"
+  invalidPassword: "invalid password",
+  registerUnique: "duplicate_unique_property_exists"
 };
 
 export { ERROR_CODE };

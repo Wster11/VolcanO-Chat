@@ -1,19 +1,19 @@
 <template>
-  <div class="loginWrap">
+  <div class="registerWrap">
     <div class="wel">VolcanO</div>
-    <Form @submit="login.onSubmit">
+    <Form @submit="register.onSubmit">
       <CellGroup inset>
         <Field
-          v-model="login.username"
-          name="user"
+          v-model="register.username"
+          name="username"
           label="用户名"
           placeholder="用户名"
           :rules="[{ required: true, message: '请填写用户名' }]"
         />
         <Field
-          v-model="login.password"
+          v-model="register.password"
           type="password"
-          name="pwd"
+          name="password"
           label="密码"
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
@@ -21,17 +21,17 @@
       </CellGroup>
       <div style="margin: 16px">
         <Button
-          :loading="login.loading"
+          :loading="register.loading"
           round
           block
           type="primary"
           native-type="submit"
         >
-          登录
+          立即注册
         </Button>
       </div>
     </Form>
-    <div class="toRegister" @click="login.toRegister">没有账号？去注册</div>
+    <div class="toLogin" @click="register.toLogin">已有账号？去登录</div>
   </div>
 </template>
 
@@ -44,11 +44,9 @@ import { useRouter } from "vue-router";
 import { ERROR_CODE } from "@/const/errorCode";
 import { AllState } from "../../store";
 
-interface LoginFormParams {
-  user: string;
-  pwd: string;
-  success?: () => void;
-  error?: () => void;
+interface RegisterFormParams {
+  username: string;
+  password: string;
 }
 
 @Options({
@@ -62,8 +60,8 @@ interface LoginFormParams {
     Button
   }
 })
-export default class Login extends Vue {
-  login = setup(() => {
+export default class Register extends Vue {
+  register = setup(() => {
     const store = useStore<AllState>();
     const username = ref<string>("");
     const password = ref<string>("");
@@ -71,26 +69,25 @@ export default class Login extends Vue {
 
     let loading = ref<boolean>(false);
 
-    const login = (opt: any) => {
-      // 登录服务器
+    const register = (opt: RegisterFormParams) => {
+      // 注册新用户
       loading.value = true;
       store.state.IM.connect
-        .open(opt)
-        .then((res) => {
-          Toast("登录成功");
-          window.localStorage.setItem("uid", username.value);
-          window.localStorage.setItem("token", res.accessToken);
-          router.push("/chat");
+        .registerUser(opt)
+        .then(() => {
+          Toast("注册成功");
+          router.push("/login");
         })
         .catch((e) => {
+          console.log(e, "eeee");
           let errInfo: any = {};
-          if (e.data.data) {
-            errInfo = JSON.parse(e.data.data);
+          if (e.data) {
+            errInfo = JSON.parse(e.data);
           }
-          if (errInfo.error_description === ERROR_CODE.invalidPassword) {
-            Toast("用户名或密码错误");
-          } else if (errInfo.error_description === ERROR_CODE.userNotFound) {
-            Toast("用户不存在");
+          if (errInfo.error === ERROR_CODE.registerUnique) {
+            Toast("用户已存在");
+          } else {
+            Toast("注册失败");
           }
         })
         .finally(() => {
@@ -98,19 +95,19 @@ export default class Login extends Vue {
         });
     };
 
-    const onSubmit = (params: LoginFormParams): void => {
-      login(params);
+    const onSubmit = (params: RegisterFormParams): void => {
+      register(params);
     };
 
-    const toRegister = (): void => {
-      router.push("/register");
+    const toLogin = (): void => {
+      router.push("/login");
     };
 
     return {
       username,
       password,
       loading,
-      toRegister,
+      toLogin,
       onSubmit
     };
   });
@@ -119,7 +116,7 @@ export default class Login extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-.loginWrap {
+.registerWrap {
   overflow: hidden;
   background-image: url("../../assets/bg.png");
   height: 100%;
@@ -131,7 +128,7 @@ export default class Login extends Vue {
     color: #fff;
     margin-bottom: 70px;
   }
-  .toRegister {
+  .toLogin {
     margin: 0 20px;
     text-align: right;
     color: #fff;

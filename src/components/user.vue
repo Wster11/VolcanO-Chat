@@ -1,7 +1,11 @@
 <template>
   <div class="userWrap" @click="user.toContact(name, chatType)">
     <div
-      class="avatar defaultAvatar"
+      :class="
+        chatType === user.CHAT_TYPE.groupChat
+          ? 'avatar defaultGroupAvatar'
+          : 'avatar defaultAvatar'
+      "
       :style="
         user.info.avatarurl
           ? `background: url(${user.info.avatarurl});background-size: 100%`
@@ -81,6 +85,12 @@ export default class Home extends Vue {
 }
 .defaultAvatar {
   background-image: url("../assets/avatar.png");
+  background-size: 100%;
+  background-position: center;
+}
+
+.defaultGroupAvatar {
+  background-image: url("../assets/group.png");
   background-size: 100%;
   background-position: center;
 }
