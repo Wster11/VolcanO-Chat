@@ -136,7 +136,7 @@
         >保存</Button
       >
       <br />
-      <Button type="default" size="small" @click="user.logout" block
+      <Button size="small" @click="user.logout" block
         >退出登录</Button
       >
     </div>
@@ -152,7 +152,6 @@ import { onMounted, reactive } from "vue";
 import { AllState } from "../../store";
 import router from "@/router";
 
-
 @Options({
   components: {
     NavBar,
@@ -161,9 +160,7 @@ import router from "@/router";
     Field
   }
 })
-
 export default class User extends Vue {
-
   user = setup(() => {
     const store = useStore<AllState>();
     let info = reactive<EasemobChat.UpdateOwnUserInfoParams>({});

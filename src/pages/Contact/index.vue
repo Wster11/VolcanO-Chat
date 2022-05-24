@@ -1,16 +1,31 @@
 <template>
-  <div class="contactWrap">
-    <NavBar title="Contact" />
+  <div class="settingWrap">
+    <NavBar title="Setting" />
     <CellGroup inset>
       <Field
-        v-model="contact.userID"
+        v-model="setting.appkey"
+        center
+        clearable
+        label="APPKEY"
+        placeholder="环信appkey"
+      >
+        <template #button>
+          <Button size="small" type="primary" @click="setting.setAppKey"
+            >设置</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="setting.userID"
         center
         clearable
         label="添加好友"
         placeholder="请输入好友ID"
       >
         <template #button>
-          <Button size="small" type="primary" @click="contact.addFriend"
+          <Button size="small" type="primary" @click="setting.addFriend"
             >添加</Button
           >
         </template>
@@ -18,14 +33,14 @@
     </CellGroup>
     <CellGroup inset>
       <Field
-        v-model="contact.delUserID"
+        v-model="setting.delUserID"
         center
         clearable
         label="删除好友"
         placeholder="请输入好友ID"
       >
         <template #button>
-          <Button size="small" type="danger" @click="contact.delFriend"
+          <Button size="small" type="danger" @click="setting.delFriend"
             >删除</Button
           >
         </template>
@@ -33,7 +48,7 @@
     </CellGroup>
     <CellGroup inset>
       <Field
-        v-model="contact.blockStr"
+        v-model="setting.blockStr"
         rows="1"
         autosize
         label="黑名单列表"
@@ -42,7 +57,7 @@
         placeholder="黑名单"
       >
         <template #button>
-          <Button type="primary" size="small" @click="contact.getBlockList"
+          <Button type="primary" size="small" @click="setting.getBlockList"
             >查看</Button
           >
         </template>
@@ -50,14 +65,14 @@
     </CellGroup>
     <CellGroup inset>
       <Field
-        v-model="contact.blockId"
+        v-model="setting.blockId"
         center
         clearable
         label="加入黑名单"
         placeholder="请输入好友ID"
       >
         <template #button>
-          <Button size="small" type="primary" @click="contact.addBlock"
+          <Button size="small" type="primary" @click="setting.addBlock"
             >加入</Button
           >
         </template>
@@ -65,29 +80,19 @@
     </CellGroup>
     <CellGroup inset>
       <Field
-        v-model="contact.delBlockId"
+        v-model="setting.delBlockId"
         center
         clearable
         label="移除黑名单"
         placeholder="请输入好友ID"
       >
         <template #button>
-          <Button size="small" type="danger" @click="contact.delBlock"
+          <Button size="small" type="danger" @click="setting.delBlock"
             >移除</Button
           >
         </template>
       </Field>
     </CellGroup>
-    <div class="contactItemWrap">
-      <span class="title">好友列表</span>
-      <br />
-      <ContactItem
-        v-for="item in contact.userStr.split('、')"
-        :key="item"
-        :name="item"
-        chatType="singleChat"
-      />
-    </div>
   </div>
 </template>
 
@@ -96,25 +101,26 @@ import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
-import ContactItem from "./contactItem.vue";
+import { appKey } from "@/const";
+import { AllState } from "@/store";
 @Options({
   components: {
     NavBar,
     Button,
     CellGroup,
-    Field,
-    ContactItem
+    Field
   }
 })
-export default class Contact extends Vue {
-  contact = setup(() => {
-    const store = useStore();
+export default class Setting extends Vue {
+  setting = setup(() => {
+    const store = useStore<AllState>();
     let userStr = ref("");
     let userID = ref("");
     let delUserID = ref("");
     let blockStr = ref("");
     let blockId = ref("");
     let delBlockId = ref("");
+    let appkey = ref(appKey);
 
     const getFriendList = () => {
       store.state.IM.connect.getContacts().then((res: any) => {
@@ -151,6 +157,16 @@ export default class Contact extends Vue {
       });
     };
 
+    // 设置应用的appkey
+    const setAppKey = () => {
+      store.state.IM.connect.close();
+      localStorage.setItem("appkey", appkey.value);
+      localStorage.removeItem("uid");
+      localStorage.removeItem("token");
+      Toast("更新appkey成功，请重新登录");
+      window.location.href = "/login";
+    };
+
     onMounted(() => {
       getFriendList();
     });
@@ -162,12 +178,14 @@ export default class Contact extends Vue {
       blockStr,
       blockId,
       delBlockId,
+      appkey,
       getFriendList,
       addFriend,
       delFriend,
       getBlockList,
       addBlock,
-      delBlock
+      delBlock,
+      setAppKey
     };
   });
 }
@@ -180,7 +198,7 @@ export default class Contact extends Vue {
   font-weight: bold;
   margin-bottom: 10px;
 }
-.contactItemWrap {
+.settingItemWrap {
   padding: 0 30px;
   text-align: left;
 }

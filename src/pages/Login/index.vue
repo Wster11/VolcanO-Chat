@@ -91,6 +91,8 @@ export default class Login extends Vue {
             Toast("用户名或密码错误");
           } else if (errInfo.error_description === ERROR_CODE.userNotFound) {
             Toast("用户不存在");
+          } else {
+            Toast("登录失败");
           }
         })
         .finally(() => {

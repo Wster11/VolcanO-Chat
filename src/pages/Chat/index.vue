@@ -89,6 +89,7 @@ import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
 import { deliverMsg, formatImFile, createMsg, recallMessage } from "@/utils/im";
 import { EasemobChat } from "../../easemob";
+import { AllState } from "@/store";
 
 @Options({
   components: {
@@ -107,7 +108,7 @@ export default class Contact extends Vue {
   chat = setup(() => {
     const router: Router = useRouter();
     const route = useRoute();
-    const store = useStore();
+    const store = useStore<AllState>();
     const conn = store.state.IM.connect;
     const instance = getCurrentInstance();
     const fromId = route.params.fromId as string;
@@ -156,9 +157,9 @@ export default class Contact extends Vue {
         count: 10,
         format: true
       };
-      conn.fetchHistoryMessages(options).then((res: any) => {
+      conn.fetchHistoryMessages(options).then((res) => {
         let uid = window.localStorage.getItem("uid");
-        console.log(res, 'res999')
+        console.log(res, "res999");
         res.forEach((item: any) => {
           console.log(item, "item");
           if (item.from === uid) {
@@ -212,7 +213,7 @@ export default class Contact extends Vue {
       ipt.ipt.mergeTxt(emojiStr);
     };
 
-    const afterReadImg = (file:any) => {
+    const afterReadImg = (file: any) => {
       // 直接发送图片URL(用户自行上传图片到自己的服务器)
       // Web端需要在 WebIMConfig.js中 设置 useOwnUploadFun: true
       // const imgMsg:any = createMsg({

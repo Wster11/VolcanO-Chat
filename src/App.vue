@@ -12,6 +12,7 @@ import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
 import { getMessageFromId } from "@/utils/im";
 import { CHAT_TYPE } from "./const";
+import { AllState } from "@/store";
 
 @Options({
   components: {
@@ -54,9 +55,9 @@ export default class App extends Vue {
         // 禁用浏览器菜单
         e.preventDefault();
       };
-      const store = useStore();
+      const store = useStore<AllState>();
       store.commit("IM/setConnect", conn);
-
+      
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
           store.commit("IM/pushMessage", {

@@ -1,7 +1,7 @@
 <template>
   <div class="homeWrap">
     <RouterView />
-    <Tabbar route active-color="seagreen">
+    <Tabbar route active-color="#212627">
       <TabbarItem replace to="/chat" icon="chat-o">聊天</TabbarItem>
       <TabbarItem replace to="/contact" icon="friends-o"> 联系人 </TabbarItem>
       <TabbarItem replace to="/user" icon="user-o">我的</TabbarItem>
