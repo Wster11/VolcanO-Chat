@@ -159,9 +159,7 @@ export default class Contact extends Vue {
       };
       conn.fetchHistoryMessages(options).then((res) => {
         let uid = window.localStorage.getItem("uid");
-        console.log(res, "res999");
         res.forEach((item: any) => {
-          console.log(item, "item");
           if (item.from === uid) {
             item.from = "";
           }

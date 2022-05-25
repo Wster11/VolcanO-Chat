@@ -17,7 +17,12 @@
       </div>
       <div v-else-if="msg.type === leftMsg.msgType.video">
         <div class="videoMsg">
-          <video :src="msg.url" controls />
+          <video
+            :id="msg.id"
+            :src="msg.url"
+            controls
+            @error="leftMsg.onVideoError(msg.id, msg.url)"
+          />
         </div>
       </div>
       <div v-else-if="msg.type === leftMsg.msgType.custom">
@@ -40,6 +45,7 @@ import { Options, Vue, setup } from "vue-class-component";
 import { formatTime } from "@/utils";
 import { MSG_TYPE } from "@/const";
 import { Icon } from "vant";
+import { ref } from "vue";
 
 @Options({
   props: {
@@ -53,17 +59,34 @@ import { Icon } from "vant";
 })
 export default class MessageLeft extends Vue {
   leftMsg = setup(() => {
+    const times = ref(0); // 加载视频重试次数
+
     const previewImg = (url: string) => {
       this.$emit("previewImg", url);
     };
     const downloadAttach = (url: string) => {
       window.open(url);
     };
+
+    const onVideoError = (id: string, src: string) => {
+      let timerId: number = 0;
+      timerId && clearInterval(timerId);
+      // 加载失败进行重试
+      if (times.value < 5) {
+        times.value++;
+        timerId = setTimeout(() => {
+          let video = document.getElementById(id) as HTMLVideoElement;
+          video.setAttribute("src", src);
+        }, 1000);
+      }
+    };
+
     return {
       formatTime,
       msgType: MSG_TYPE,
       previewImg,
-      downloadAttach
+      downloadAttach,
+      onVideoError
     };
   });
 }

@@ -30,7 +30,12 @@
           </div>
           <div v-else-if="msg.type === rightMsg.msgType.video">
             <div class="videoMsg">
-              <video :src="msg.url" controls />
+              <video
+                :id="msg.id"
+                :src="msg.url"
+                controls
+                @error="rightMsg.onVideoError(msg.id, msg.url)"
+              />
             </div>
           </div>
           <div v-else-if="msg.type === rightMsg.msgType.custom">
@@ -72,6 +77,7 @@ import { Icon, Popover, PopoverAction } from "vant";
 export default class MessageRight extends Vue {
   rightMsg = setup(() => {
     let intervalId: number;
+
     const previewImg = (url: string) => {
       this.$emit("previewImg", url);
     };
@@ -79,6 +85,8 @@ export default class MessageRight extends Vue {
       window.open(url);
     };
     const uid = localStorage.getItem("uid");
+
+    const times = ref(0); // 加载视频重试次数
 
     const isShowMenu = ref(false);
 
@@ -101,6 +109,19 @@ export default class MessageRight extends Vue {
       }
     };
 
+    const onVideoError = (id: string, src: string) => {
+      let timerId: number = 0;
+      timerId && clearInterval(timerId);
+      // 加载失败进行重试
+      if (times.value < 5) {
+        times.value++;
+        timerId = setTimeout(() => {
+          let video = document.getElementById(id) as HTMLVideoElement;
+          video.setAttribute("src", src);
+        }, 1000);
+      }
+    };
+
     return {
       actions,
       msgType: MSG_TYPE,
@@ -111,7 +132,8 @@ export default class MessageRight extends Vue {
       previewImg,
       showMenu,
       end,
-      downloadAttach
+      downloadAttach,
+      onVideoError
     };
   });
 }
