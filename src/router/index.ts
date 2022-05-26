@@ -19,6 +19,11 @@ const routes = [
         path: "/user",
         name: "user",
         component: () => import("@/pages/User/index.vue")
+      },
+      {
+        path: "/setting",
+        name: "setting",
+        component: () => import("@/pages/Setting/index.vue")
       }
     ]
   },

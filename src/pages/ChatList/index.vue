@@ -37,6 +37,7 @@ import { ref, onMounted } from "vue";
 import { NavBar, Icon, Popover, Empty } from "vant";
 import User from "@/components/user.vue";
 import { EasemobChat } from "easemob-websdk";
+import { useRouter, Router } from "vue-router";
 import { formatSessionListTo } from "@/utils/im";
 import { CHAT_TYPE, GROUP_SESSION } from "@/const";
 import { AllState } from "@/store";
@@ -59,15 +60,13 @@ export default class Home extends Vue {
     const store = useStore<AllState>();
     const chatList = ref<Array<EasemobChat.SessionInfo>>([]);
     const showPopover = ref(false);
+    const route: Router = useRouter();
 
     // 通过 actions 属性来定义菜单选项
-    const actions: Array<Actions> = [
-      { text: "添加好友" },
-      { text: "申请入群" },
-      { text: "创建群组" }
-    ];
+    const actions: Array<Actions> = [{ text: "添加好友" }, { text: "设置" }];
     const onSelect = (action: Actions) => {
-      console.log(action.text);
+      console.log(action);
+      route.push("/setting");
     };
 
     onMounted(() => {

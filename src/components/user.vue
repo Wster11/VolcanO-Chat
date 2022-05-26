@@ -13,7 +13,9 @@
       "
     ></div>
     <span>{{
-      chatType === user.CHAT_TYPE.groupChat ? `Group: ${name}` : name
+      chatType === user.CHAT_TYPE.groupChat
+        ? `Group: ${name}`
+        : user.info.nickname || name
     }}</span>
   </div>
 </template>
@@ -29,7 +31,7 @@ import { useStore } from "vuex";
 
 @Options({
   props: {
-    name: String,
+    name: String, // 默认名称uid
     chatType: CHAT_TYPE
   }
 })

@@ -128,17 +128,19 @@
     </CellGroup>
     <br />
     <div style="padding: 0 16px">
-      <Button
+      <!-- <Button
         type="primary"
         size="small"
         block
         @click="user.updateUserInfo(user.info)"
         >保存</Button
+      > -->
+      <br />
+      <Button size="small" type="primary" @click="user.setting" block
+        >设置</Button
       >
       <br />
-      <Button size="small" @click="user.logout" block
-        >退出登录</Button
-      >
+      <Button size="small" @click="user.logout" block>退出登录</Button>
     </div>
   </div>
 </template>
@@ -192,6 +194,10 @@ export default class User extends Vue {
       router.push("/login");
     };
 
+    const setting = () => {
+      router.push("/setting");
+    };
+
     onMounted(() => {
       getUserInfo();
     });
@@ -200,7 +206,8 @@ export default class User extends Vue {
       userId: conn.user,
       info: info,
       updateUserInfo,
-      logout
+      logout,
+      setting
     };
   });
 }
