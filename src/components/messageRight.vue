@@ -65,8 +65,12 @@ import { ref } from "vue";
 import { Icon, Popover, PopoverAction } from "vant";
 @Options({
   props: {
-    msg: Object,
-    timestamp: Number
+    msg: {
+      default: () => {
+        return {};
+      }
+    },
+    timestamp: 0
   },
   components: {
     Icon,

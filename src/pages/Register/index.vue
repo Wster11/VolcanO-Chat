@@ -50,9 +50,6 @@ interface RegisterFormParams {
 }
 
 @Options({
-  props: {
-    msg: String
-  },
   components: {
     Form,
     Field,

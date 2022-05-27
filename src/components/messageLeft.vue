@@ -49,8 +49,12 @@ import { ref } from "vue";
 
 @Options({
   props: {
-    msg: Object,
-    timestamp: Number
+    msg: {
+      default: () => {
+        return {};
+      }
+    },
+    timestamp: 0
   },
   components: {
     Icon

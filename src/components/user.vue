@@ -14,7 +14,7 @@
     ></div>
     <span>{{
       chatType === user.CHAT_TYPE.groupChat
-        ? `Group: ${name}`
+        ? `${user.info.name || name}`
         : user.info.nickname || name
     }}</span>
   </div>
@@ -31,7 +31,7 @@ import { useStore } from "vuex";
 
 @Options({
   props: {
-    name: String, // 默认名称uid
+    name: "", // 默认名称uid
     chatType: CHAT_TYPE
   }
 })
@@ -53,6 +53,17 @@ export default class Home extends Vue {
             success: true
           });
         });
+      } else if (context?.props.chatType === CHAT_TYPE.groupChat) {
+        conn
+          .getGroupInfo({ groupId: context?.props.name as string })
+          .then((res) => {
+            Object.assign(info, res.data?.[0], {
+              success: true
+            });
+          });
+        Object.assign(info, {
+          success: true
+        });
       } else {
         Object.assign(info, {
           success: true
@@ -73,7 +84,7 @@ export default class Home extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .userWrap {
   display: flex;
   align-items: center;

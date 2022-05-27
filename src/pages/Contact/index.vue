@@ -1,88 +1,74 @@
 <template>
-  <div class="contactWrap">
-    <NavBar title="Contact" :fixed="true"/>
-    <div class="contactItemWrap">
-      <span class="title">好友列表</span>
-      <br />
-      <ContactItem
-        v-for="item in contact.userStr.split('、')"
-        :key="item"
-        :name="item"
-        chatType="singleChat"
-      />
+  <div>
+    <NavBar title="Contact" :fixed="true" />
+    <div class="contactWrap">
+      <div class="title">我的好友</div>
+      <div class="itemsWrap">
+        <ContactItem
+          v-for="(item, idx) in contact.userList"
+          :key="item"
+          :name="item"
+          :isEnd="idx >= contact.userList.length - 1"
+          chatType="singleChat"
+        />
+      </div>
+      <div class="title">我的群组</div>
+      <div class="itemsWrap">
+        <ContactItem
+          v-for="(item, idx) in contact.groupList"
+          :key="item.groupid"
+          :name="item.groupid"
+          :isEnd="idx >= contact.groupList.length - 1"
+          chatType="groupChat"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import { NavBar, Button, CellGroup, Field, Toast } from "vant";
+import { NavBar, Button, Field } from "vant";
 import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
 import ContactItem from "./contactItem.vue";
+import { AllState } from "@/store";
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
+
 @Options({
   components: {
     NavBar,
     Button,
-    CellGroup,
     Field,
     ContactItem
   }
 })
 export default class Contact extends Vue {
   contact = setup(() => {
-    const store = useStore();
-    let userStr = ref("");
-    let userID = ref("");
-    let delUserID = ref("");
-    let blockStr = ref("");
-    let blockId = ref("");
-    let delBlockId = ref("");
+    const store = useStore<AllState>();
+    let userList = ref<string[]>([]);
+    let groupList = ref<EasemobChat.BaseGroupInfo[]>([]);
+
     const getFriendList = () => {
-      store.state.IM.connect.getContacts().then((res: any) => {
-        userStr.value = res.data.join("、");
+      store.state.IM.connect.getContacts().then((res) => {
+        userList.value = res?.data || [];
       });
     };
-    const getBlockList = () => {
-      store.state.IM.connect.getBlacklist().then((res: any) => {
-        blockStr.value = res.data.join("、");
+
+    const getJoinedGroupList = () => {
+      store.state.IM.connect.getGroup().then((res) => {
+        groupList.value = res.data || [];
       });
     };
-    const addFriend = () => {
-      let msg = "添加个好友吧!";
-      store.state.IM.connect.addContact(userID.value, msg);
-      Toast("发送好友请求成功");
-    };
-    const addBlock = () => {
-      store.state.IM.connect.addToBlackList({
-        name: blockId.value
-      });
-      Toast(`将${blockId.value}加入黑名单成功`);
-    };
-    const delFriend = () => {
-      store.state.IM.connect.deleteContact(delUserID.value);
-    };
-    const delBlock = () => {
-      store.state.IM.connect.removeFromBlackList({
-        name: delBlockId.value
-      });
-    };
+
     onMounted(() => {
       getFriendList();
+      getJoinedGroupList();
     });
     return {
-      userStr,
-      userID,
-      delUserID,
-      blockStr,
-      blockId,
-      delBlockId,
-      getFriendList,
-      addFriend,
-      delFriend,
-      getBlockList,
-      addBlock,
-      delBlock
+      userList,
+      groupList,
+      getFriendList
     };
   });
 }
@@ -91,12 +77,15 @@ export default class Contact extends Vue {
 <style lang="less" scoped>
 .title {
   color: #000;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 13px;
+  padding: 4px 12px;
+  background: #eeeeee;
 }
-.contactItemWrap {
-  padding: 50px 30px;
+.contactWrap {
+  padding: 46px 0;
   text-align: left;
+}
+.itemsWrap {
+  padding: 0 3vw;
 }
 </style>

@@ -11,7 +11,7 @@
           @select="chat.onSelect"
         >
           <template #reference>
-            <Icon name="plus" size="20" color="seagreen" />
+            <Icon name="plus" size="20" color="#1296db" />
           </template>
         </Popover>
       </template>
