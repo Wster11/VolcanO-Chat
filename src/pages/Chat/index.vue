@@ -146,7 +146,7 @@ export default class Contact extends Vue {
     };
 
     const toChat = () => {
-      router.go(-1)
+      router.go(-1);
     };
 
     // 获取历史消息

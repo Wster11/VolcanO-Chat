@@ -5,7 +5,8 @@ const ERROR_CODE = {
   recallTimeout: "exceed recall time limit",
   userNotFound: "user not found",
   invalidPassword: "invalid password",
-  registerUnique: "duplicate_unique_property_exists"
+  registerUnique: "duplicate_unique_property_exists",
+  sendMsgBlock: 'blocked'
 };
 
 export { ERROR_CODE };

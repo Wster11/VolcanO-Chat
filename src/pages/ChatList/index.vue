@@ -46,6 +46,10 @@ interface Actions {
   text: string;
 }
 
+interface ChatItemInfo extends EasemobChat.SessionInfo {
+  chatType: CHAT_TYPE;
+}
+
 @Options({
   components: {
     User,
@@ -58,7 +62,7 @@ interface Actions {
 export default class Home extends Vue {
   chat = setup(() => {
     const store = useStore<AllState>();
-    const chatList = ref<Array<EasemobChat.SessionInfo>>([]);
+    const chatList = ref<Array<ChatItemInfo>>([]);
     const showPopover = ref(false);
     const route: Router = useRouter();
 
@@ -71,13 +75,14 @@ export default class Home extends Vue {
 
     onMounted(() => {
       store.state.IM.connect.getSessionList().then((res) => {
-        res.data?.channel_infos.forEach((item) => {
+        let dt = (res.data?.channel_infos || []) as ChatItemInfo[];
+        dt.forEach((item) => {
           item.chatType =
             item.meta.to.indexOf(GROUP_SESSION) > -1
               ? CHAT_TYPE.groupChat
               : CHAT_TYPE.singleChat;
         });
-        chatList.value = res.data?.channel_infos || [];
+        chatList.value = dt;
       });
     });
 

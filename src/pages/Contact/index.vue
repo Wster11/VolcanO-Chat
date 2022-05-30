@@ -56,9 +56,14 @@ export default class Contact extends Vue {
     };
 
     const getJoinedGroupList = () => {
-      store.state.IM.connect.getGroup().then((res) => {
-        groupList.value = res.data || [];
-      });
+      store.state.IM.connect
+        .getJoinedGroups({
+          pageNum: 1,
+          pageSize: 500
+        })
+        .then((res) => {
+          groupList.value = res.data || [];
+        });
     };
 
     onMounted(() => {

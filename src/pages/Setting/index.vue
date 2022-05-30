@@ -93,6 +93,21 @@
         </template>
       </Field>
     </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="setting.groupId"
+        center
+        clearable
+        label="加入群组"
+        placeholder="请输入群组ID"
+      >
+        <template #button>
+          <Button size="small" type="danger" @click="setting.joinGroup"
+            >加入</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
   </div>
 </template>
 
@@ -120,6 +135,7 @@ export default class Setting extends Vue {
     let blockStr = ref("");
     let blockId = ref("");
     let delBlockId = ref("");
+    let groupId = ref("");
     let appkey = ref(appKey);
 
     const getFriendList = () => {
@@ -167,6 +183,21 @@ export default class Setting extends Vue {
       window.location.href = "/login";
     };
 
+    // 加入群组
+    const joinGroup = () => {
+      store.state.IM.connect
+        .joinGroup({
+          groupId: groupId.value,
+          message: "申请加入群组"
+        })
+        .then(() => {
+          Toast("申请加入群组成功");
+        })
+        .catch(() => {
+          Toast("申请加入群组失败");
+        });
+    };
+
     onMounted(() => {
       getFriendList();
     });
@@ -179,13 +210,15 @@ export default class Setting extends Vue {
       blockId,
       delBlockId,
       appkey,
+      groupId,
       getFriendList,
       addFriend,
       delFriend,
       getBlockList,
       addBlock,
       delBlock,
-      setAppKey
+      setAppKey,
+      joinGroup
     };
   });
 }
