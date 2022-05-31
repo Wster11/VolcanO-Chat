@@ -62,6 +62,7 @@
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
         <span @click="chat.sendAck">ack</span>
       </div>
+      <div class="sendBtn" @click="chat.onSendClick">发送</div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
   </div>
@@ -78,7 +79,8 @@ import {
   Grid,
   GridItem,
   Uploader,
-  ImagePreview
+  ImagePreview,
+  Toast
 } from "vant";
 import { useStore } from "vuex";
 import { getCurrentInstance, ref, onMounted } from "vue";
@@ -180,12 +182,20 @@ export default class Contact extends Vue {
       }
     });
 
+    const onSendClick = () => {
+      const ipt: any = instance?.refs.ipt;
+      if (ipt.ipt.txt) {
+        sendMsg(ipt.ipt.txt);
+      } else {
+        Toast("不能发送空消息");
+      }
+    };
+
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
       let msg: any = createMsg({
         chatType: chatType,
         type: MSG_TYPE.txt,
-        // to: "170933540159489",
         to: fromId,
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息
@@ -462,6 +472,7 @@ export default class Contact extends Vue {
       afterReadAttach,
       previewImage,
       afterReadVideo,
+      onSendClick,
       sendCustomMsg,
       sendCmdMsg,
       revokeMsg,
@@ -502,5 +513,17 @@ export default class Contact extends Vue {
 .emoji {
   width: 20px;
   height: 20px;
+}
+
+.sendBtn {
+  position: absolute;
+  top: 16px;
+  right: 25px;
+  display: inline-block;
+  color: #fff;
+  width: 50px;
+  text-align: center;
+  background: #4d4f51;
+  border-radius: 7px;
 }
 </style>

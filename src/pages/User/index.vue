@@ -215,7 +215,9 @@ export default class User extends Vue {
 
 <style lang="less" scoped>
 .contactWrap {
-  padding: 50px 0;
+  height: calc(100vh - 125px);
+  padding: 12px 0;
+  overflow: scroll;
 }
 .title {
   color: #000;

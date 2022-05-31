@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar title="Contact" :fixed="true" />
+    <NavBar title="Contact" />
     <div class="contactWrap">
       <div class="title">我的好友</div>
       <div class="itemsWrap">
@@ -87,7 +87,9 @@ export default class Contact extends Vue {
   background: #eeeeee;
 }
 .contactWrap {
-  padding: 46px 0;
+  height: calc(100vh - 125px);
+  overflow: scroll;
+  padding: 12px 0;
   text-align: left;
 }
 .itemsWrap {

@@ -1,6 +1,6 @@
 <template>
   <div class="chatWrap">
-    <NavBar title="Message" :fixed="true">
+    <NavBar title="Message">
       <template #right>
         <Popover
           :overlay="true"
@@ -99,6 +99,8 @@ export default class Home extends Vue {
 
 <style scoped>
 .userListWrap {
-  padding: 50px 3vw;
+  height: calc(100vh - 125px);
+  overflow: scroll;
+  padding: 12px 3vw;
 }
 </style>
