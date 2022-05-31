@@ -1,6 +1,6 @@
 <template>
   <div class="contactWrap">
-    <NavBar title="User" :fixed="true" />
+    <NavBar title="User" />
     <br />
     <CellGroup inset>
       <img class="avatar" :src="user.info.avatarurl" />
@@ -215,9 +215,7 @@ export default class User extends Vue {
 
 <style lang="less" scoped>
 .contactWrap {
-  height: calc(100vh - 125px);
   padding: 12px 0;
-  overflow: scroll;
 }
 .title {
   color: #000;
