@@ -1,4 +1,4 @@
-# vue3-webim
+# VolcanO-Chat
 
 ## Project setup
 ```
