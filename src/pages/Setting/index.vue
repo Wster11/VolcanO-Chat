@@ -108,6 +108,21 @@
         </template>
       </Field>
     </CellGroup>
+    <CellGroup inset>
+      <Field
+        v-model="setting.infoGroupId"
+        center
+        clearable
+        label="获取群组信息"
+        placeholder="请输入群组ID"
+      >
+        <template #button>
+          <Button size="small" type="danger" @click="setting.getGroupInfo"
+            >获取</Button
+          >
+        </template>
+      </Field>
+    </CellGroup>
   </div>
 </template>
 
@@ -136,6 +151,7 @@ export default class Setting extends Vue {
     let blockId = ref("");
     let delBlockId = ref("");
     let groupId = ref("");
+    let infoGroupId = ref("");
     let appkey = ref(appKey);
 
     const getFriendList = () => {
@@ -198,8 +214,27 @@ export default class Setting extends Vue {
         });
     };
 
+    // 获取群组信息,支持批量和获取单个
+    const getGroupInfo = () => {
+      let dt: string | string[] = infoGroupId.value.split(",");
+      if (dt.length === 1) {
+        dt = dt[0];
+      }
+      store.state.IM.connect
+        .getGroupInfo({
+          groupId: dt
+        })
+        .then((res) => {
+          console.log(res, "res");
+        })
+        .catch((e) => {
+          console.log(e, "eee");
+        });
+    };
+
     onMounted(() => {
       getFriendList();
+      getGroupInfo();
     });
 
     return {
@@ -211,6 +246,7 @@ export default class Setting extends Vue {
       delBlockId,
       appkey,
       groupId,
+      infoGroupId,
       getFriendList,
       addFriend,
       delFriend,
@@ -218,7 +254,8 @@ export default class Setting extends Vue {
       addBlock,
       delBlock,
       setAppKey,
-      joinGroup
+      joinGroup,
+      getGroupInfo
     };
   });
 }
