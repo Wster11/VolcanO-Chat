@@ -19,6 +19,11 @@ const routes = [
         path: "/user",
         name: "user",
         component: () => import("@/pages/User/index.vue")
+      },
+      {
+        path: "/setting",
+        name: "setting",
+        component: () => import("@/pages/Setting/index.vue")
       }
     ]
   },
@@ -27,7 +32,8 @@ const routes = [
     name: "chatDetail",
     component: () => import("@/pages/Chat/index.vue")
   },
-  { path: "/login", component: () => import("@/pages/Login/index.vue") }
+  { path: "/login", component: () => import("@/pages/Login/index.vue") },
+  { path: "/register", component: () => import("@/pages/Register/index.vue") }
 ];
 
 const router = createRouter({

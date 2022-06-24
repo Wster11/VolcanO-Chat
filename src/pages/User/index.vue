@@ -128,28 +128,31 @@
     </CellGroup>
     <br />
     <div style="padding: 0 16px">
-      <Button
+      <!-- <Button
         type="primary"
         size="small"
         block
         @click="user.updateUserInfo(user.info)"
         >保存</Button
+      > -->
+      <br />
+      <Button size="small" type="primary" @click="user.setting" block
+        >设置</Button
       >
       <br />
-      <p class="tip">
-        Tip:
-        设置用户属性时，可以设置用户的所有属性，也可以只设置用户的某一项属性
-      </p>
+      <Button size="small" @click="user.logout" block>退出登录</Button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { EasemobChat } from "easemob-websdk/Easemob-chat";
 import { Options, Vue, setup } from "vue-class-component";
 import { NavBar, Button, CellGroup, Field, Toast } from "vant";
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
-import { UserOption, InfoRes } from "@/types/user";
+import { AllState } from "../../store";
+import router from "@/router";
 
 @Options({
   components: {
@@ -161,17 +164,19 @@ import { UserOption, InfoRes } from "@/types/user";
 })
 export default class User extends Vue {
   user = setup(() => {
-    const store = useStore();
-    let info = reactive<UserOption>({});
+    const store = useStore<AllState>();
+    let info = reactive<EasemobChat.UpdateOwnUserInfoParams>({});
     const conn = store.state.IM.connect;
     const getUserInfo = () => {
-      conn.fetchUserInfoById(conn.user).then((res: InfoRes) => {
-        Object.assign(info, res.data[conn.user]);
+      conn.fetchUserInfoById(conn.user).then((res) => {
+        Object.assign(info, res.data?.[conn.user]);
       });
     };
 
-    const updateUserInfo = (options: UserOption | string, value: string) => {
-      console.log(options, value);
+    const updateUserInfo = (
+      options: EasemobChat.UpdateOwnUserInfoParams,
+      value: string
+    ) => {
       conn
         .updateOwnUserInfo(options, value)
         .then(() => {
@@ -182,6 +187,17 @@ export default class User extends Vue {
         });
     };
 
+    const logout = () => {
+      conn.close();
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("uid");
+      router.push("/login");
+    };
+
+    const setting = () => {
+      router.push("/setting");
+    };
+
     onMounted(() => {
       getUserInfo();
     });
@@ -189,13 +205,18 @@ export default class User extends Vue {
     return {
       userId: conn.user,
       info: info,
-      updateUserInfo
+      updateUserInfo,
+      logout,
+      setting
     };
   });
 }
 </script>
 
 <style lang="less" scoped>
+.contactWrap {
+  padding: 12px 0;
+}
 .title {
   color: #000;
   font-size: 20px;
