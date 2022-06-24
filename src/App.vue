@@ -1,16 +1,18 @@
 <template>
-  <RouterView />
+  <RouterView v-if="app.isShowApp" />
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { RouterView, useRouter, Router } from "vue-router";
 import { Dialog, Toast } from "vant";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import conn from "./initIm";
 import { ERROR_CODE } from "@/const/errorCode";
 import { getMessageFromId } from "@/utils/im";
+import { CHAT_TYPE } from "./const";
+import { AllState } from "@/store";
 
 @Options({
   components: {
@@ -20,14 +22,42 @@ import { getMessageFromId } from "@/utils/im";
 export default class App extends Vue {
   app = setup(() => {
     const router: Router = useRouter();
+    const isShowApp = ref(false);
+    const imToken: string | null = localStorage.getItem("token");
+    const imUid: string | null = localStorage.getItem("uid");
+
+    const loginByToken = () => {
+      if (imToken && imUid) {
+        conn
+          .open({
+            accessToken: imToken,
+            user: imUid
+          })
+          .then(() => {
+            router.push("/chat");
+          })
+          .catch(() => {
+            router.push("/login");
+          })
+          .finally(() => {
+            isShowApp.value = true;
+          });
+      } else {
+        isShowApp.value = true;
+        router.push("/login");
+      }
+    };
+
     onMounted(() => {
+      loginByToken();
+
       document.oncontextmenu = function (e) {
         // 禁用浏览器菜单
         e.preventDefault();
       };
-      const store = useStore();
+      const store = useStore<AllState>();
       store.commit("IM/setConnect", conn);
-
+      
       conn.addEventHandler("MESSAGE", {
         onTextMessage: (message) => {
           store.commit("IM/pushMessage", {
@@ -71,8 +101,14 @@ export default class App extends Vue {
           console.log("收到命令消息了", message);
         },
         onRecallMessage: (message) => {
+          // 撤回消息没有chatType, 所以单聊群组都查一下,然后删除
           store.commit("IM/deleteMessage", {
-            fromId: getMessageFromId(message),
+            fromId: `${CHAT_TYPE.singleChat}${message.from}`,
+            id: message.mid
+          });
+
+          store.commit("IM/deleteMessage", {
+            fromId: `${CHAT_TYPE.groupChat}${message.to}`,
             id: message.mid
           });
           console.log("收到撤回消息了", message);
@@ -133,7 +169,9 @@ export default class App extends Vue {
         }
       });
     });
-    return {};
+    return {
+      isShowApp
+    };
   });
 }
 </script>

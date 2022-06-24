@@ -11,7 +11,7 @@
     "babel-plugin-import": "^1.13.3",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
-    "easemob-websdk": "^4.0.3",
+    "easemob-websdk": "^4.0.8",
     "vant": "3",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",

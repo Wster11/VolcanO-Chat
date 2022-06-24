@@ -1,99 +1,79 @@
 <template>
-  <div class="contactWrap">
+  <div>
     <NavBar title="Contact" />
-    <CellGroup inset>
-      <Field
-        v-model="contact.userStr"
-        rows="1"
-        autosize
-        label="好友列表"
-        type="textarea"
-        center
-        placeholder="好友"
-      >
-        <template #button>
-          <Button type="primary" size="small" @click="contact.getFriendList"
-            >查询好友列表</Button
-          >
-        </template>
-      </Field>
-    </CellGroup>
-    <CellGroup inset>
-      <Field
-        v-model="contact.userID"
-        center
-        clearable
-        label="添加好友"
-        placeholder="请输入好友ID"
-      >
-        <template #button>
-          <Button size="small" type="primary" @click="contact.addFriend"
-            >添加</Button
-          >
-        </template>
-      </Field>
-    </CellGroup>
-    <CellGroup inset>
-      <Field
-        v-model="contact.delUserID"
-        center
-        clearable
-        label="删除好友"
-        placeholder="请输入好友ID"
-      >
-        <template #button>
-          <Button size="small" type="danger" @click="contact.delFriend"
-            >删除</Button
-          >
-        </template>
-      </Field>
-    </CellGroup>
+    <div class="contactWrap">
+      <div class="title">我的好友</div>
+      <div class="itemsWrap">
+        <ContactItem
+          v-for="(item, idx) in contact.userList"
+          :key="item"
+          :name="item"
+          :isEnd="idx >= contact.userList.length - 1"
+          chatType="singleChat"
+        />
+      </div>
+      <div class="title">我的群组</div>
+      <div class="itemsWrap">
+        <ContactItem
+          v-for="(item, idx) in contact.groupList"
+          :key="item.groupid"
+          :name="item.groupid"
+          :isEnd="idx >= contact.groupList.length - 1"
+          chatType="groupChat"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import { NavBar, Button, CellGroup, Field, Toast } from "vant";
+import { NavBar, Button, Field } from "vant";
 import { useStore } from "vuex";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import ContactItem from "./contactItem.vue";
+import { AllState } from "@/store";
+import { EasemobChat } from "easemob-websdk/Easemob-chat";
+
 @Options({
   components: {
     NavBar,
     Button,
-    CellGroup,
-    Field
+    Field,
+    ContactItem
   }
 })
 export default class Contact extends Vue {
   contact = setup(() => {
-    const store = useStore();
-    let userStr = ref("");
-    let userID = ref("");
-    let delUserID = ref("");
+    const store = useStore<AllState>();
+    let userList = ref<string[]>([]);
+    let groupList = ref<EasemobChat.BaseGroupInfo[]>([]);
 
     const getFriendList = () => {
-      store.state.IM.connect.getContacts().then((res: any) => {
-        userStr.value = res.data.join("、");
+      store.state.IM.connect.getContacts().then((res) => {
+        userList.value = res?.data || [];
       });
     };
 
-    const addFriend = () => {
-      let msg = "添加个好友吧!";
-      store.state.IM.connect.addContact(userID.value, msg);
-      Toast("发送好友请求成功");
+    const getJoinedGroupList = () => {
+      store.state.IM.connect
+        .getJoinedGroups({
+          pageNum: 1,
+          pageSize: 500
+        })
+        .then((res) => {
+          groupList.value = res.data || [];
+        });
     };
 
-    const delFriend = () => {
-      store.state.IM.connect.deleteContact(delUserID.value);
-    };
-
+    onMounted(() => {
+      getFriendList();
+      getJoinedGroupList();
+    });
     return {
-      userStr,
-      userID,
-      delUserID,
-      getFriendList,
-      addFriend,
-      delFriend
+      userList,
+      groupList,
+      getFriendList
     };
   });
 }
@@ -102,7 +82,17 @@ export default class Contact extends Vue {
 <style lang="less" scoped>
 .title {
   color: #000;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 13px;
+  padding: 4px 12px;
+  background: #eeeeee;
+}
+.contactWrap {
+  height: calc(100vh - 125px);
+  overflow: scroll;
+  padding: 12px 0;
+  text-align: left;
+}
+.itemsWrap {
+  padding: 0 3vw;
 }
 </style>

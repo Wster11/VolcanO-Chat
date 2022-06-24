@@ -1,12 +1,12 @@
 import { ERROR_CODE } from "@/const/errorCode";
-import websdk from "agora-chat-sdk";
+import websdk from "easemob-websdk";
 import { EasemobChat } from "../easemob";
 import conn from "../initIm";
 import { Toast } from "vant";
 import { appKey, GROUP_SESSION, CHAT_TYPE } from "@/const/index";
 
 // 发送消息
-const deliverMsg = (msg: EasemobChat.MessageBody) => {
+const deliverMsg = (msg:any) => {
   return new Promise((resolve, reject) => {
     conn
       .send(msg)
@@ -14,9 +14,11 @@ const deliverMsg = (msg: EasemobChat.MessageBody) => {
         resolve(res);
         msg.id = res.serverMsgId;
       })
-      .catch((e: any) => {
+      .catch((e: EasemobChat.ErrorEvent) => {
         if (e.message === ERROR_CODE.notLogin) {
           console.log("未登录");
+        } else if (e.message === ERROR_CODE.sendMsgBlock) {
+          Toast("您已被拉入黑名单");
         }
         reject(e);
         console.log(e, "发送消息失败");
@@ -30,7 +32,7 @@ const recallMessage = (options: any) => {
   return new Promise((resolve, reject) => {
     conn
       .recallMessage(options)
-      .then((res) => {
+      .then((res: any) => {
         resolve(res);
       })
       .catch((e: any) => {

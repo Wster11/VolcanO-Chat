@@ -62,6 +62,7 @@
         <Icon class="icon" size="20" name="replay" @click="chat.sendCmdMsg" />
         <span @click="chat.sendAck">ack</span>
       </div>
+      <div class="sendBtn" @click="chat.onSendClick">发送</div>
       <Input ref="ipt" @send="chat.sendMsg" />
     </div>
   </div>
@@ -78,7 +79,8 @@ import {
   Grid,
   GridItem,
   Uploader,
-  ImagePreview
+  ImagePreview,
+  Toast
 } from "vant";
 import { useStore } from "vuex";
 import { getCurrentInstance, ref, onMounted } from "vue";
@@ -89,6 +91,7 @@ import emoji from "@/const/emojs";
 import { scrollToBottom } from "@/utils";
 import { deliverMsg, formatImFile, createMsg, recallMessage } from "@/utils/im";
 import { EasemobChat } from "../../easemob";
+import { AllState } from "@/store";
 
 @Options({
   components: {
@@ -107,7 +110,7 @@ export default class Contact extends Vue {
   chat = setup(() => {
     const router: Router = useRouter();
     const route = useRoute();
-    const store = useStore();
+    const store = useStore<AllState>();
     const conn = store.state.IM.connect;
     const instance = getCurrentInstance();
     const fromId = route.params.fromId as string;
@@ -145,7 +148,7 @@ export default class Contact extends Vue {
     };
 
     const toChat = () => {
-      router.push("/chat");
+      router.go(-1);
     };
 
     // 获取历史消息
@@ -156,10 +159,9 @@ export default class Contact extends Vue {
         count: 10,
         format: true
       };
-      conn.fetchHistoryMessages(options).then((res: any) => {
+      conn.fetchHistoryMessages(options).then((res) => {
         let uid = window.localStorage.getItem("uid");
         res.forEach((item: any) => {
-          console.log(item, "item");
           if (item.from === uid) {
             item.from = "";
           }
@@ -180,12 +182,20 @@ export default class Contact extends Vue {
       }
     });
 
+    const onSendClick = () => {
+      const ipt: any = instance?.refs.ipt;
+      if (ipt.ipt.txt) {
+        sendMsg(ipt.ipt.txt);
+      } else {
+        Toast("不能发送空消息");
+      }
+    };
+
     // 发送文本和表情消息
     const sendMsg = (txt: string) => {
       let msg: any = createMsg({
         chatType: chatType,
         type: MSG_TYPE.txt,
-        // to: "170933540159489",
         to: fromId,
         msg: txt,
         ext: { extra: "附加消息" } // 发送附加消息
@@ -214,7 +224,7 @@ export default class Contact extends Vue {
     const afterReadImg = (file: any) => {
       // 直接发送图片URL(用户自行上传图片到自己的服务器)
       // Web端需要在 WebIMConfig.js中 设置 useOwnUploadFun: true
-      // const imgMsg = createMsg({
+      // const imgMsg:any = createMsg({
       //   chatType: chatType,
       //   type: MSG_TYPE.img,
       //   url: "https://www.easemob.com/statics/common/images/logo.png?20211109",
@@ -462,6 +472,7 @@ export default class Contact extends Vue {
       afterReadAttach,
       previewImage,
       afterReadVideo,
+      onSendClick,
       sendCustomMsg,
       sendCmdMsg,
       revokeMsg,
@@ -502,5 +513,17 @@ export default class Contact extends Vue {
 .emoji {
   width: 20px;
   height: 20px;
+}
+
+.sendBtn {
+  position: absolute;
+  top: 16px;
+  right: 25px;
+  display: inline-block;
+  color: #fff;
+  width: 50px;
+  text-align: center;
+  background: #4d4f51;
+  border-radius: 7px;
 }
 </style>

@@ -11,7 +11,7 @@
           @select="chat.onSelect"
         >
           <template #reference>
-            <Icon name="plus" size="20" color="seagreen" />
+            <Icon name="plus" size="20" color="#1296db" />
           </template>
         </Popover>
       </template>
@@ -25,6 +25,7 @@
           chat.formatSessionListTo(item.meta.from, item.meta.to, item.chatType)
         "
       />
+      <Empty v-if="!chat.chatList.length" description="会话列表为空" />
     </div>
   </div>
 </template>
@@ -33,22 +34,20 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
-import { NavBar, Icon, Popover } from "vant";
+import { NavBar, Icon, Popover, Empty } from "vant";
 import User from "@/components/user.vue";
 import { EasemobChat } from "easemob-websdk";
+import { useRouter, Router } from "vue-router";
 import { formatSessionListTo } from "@/utils/im";
 import { CHAT_TYPE, GROUP_SESSION } from "@/const";
-
-interface SessionInfoWithType extends EasemobChat.SessionInfo {
-  chatType?: string;
-}
-
-interface ChannelInfo {
-  channel_infos: SessionInfoWithType[];
-}
+import { AllState } from "@/store";
 
 interface Actions {
   text: string;
+}
+
+interface ChatItemInfo extends EasemobChat.SessionInfo {
+  chatType: CHAT_TYPE;
 }
 
 @Options({
@@ -56,37 +55,35 @@ interface Actions {
     User,
     NavBar,
     Icon,
-    Popover
+    Popover,
+    Empty
   }
 })
 export default class Home extends Vue {
   chat = setup(() => {
-    const store = useStore();
-    const chatList = ref<Array<EasemobChat.SessionInfo>>([]);
+    const store = useStore<AllState>();
+    const chatList = ref<Array<ChatItemInfo>>([]);
     const showPopover = ref(false);
+    const route: Router = useRouter();
 
     // 通过 actions 属性来定义菜单选项
-    const actions: Array<Actions> = [
-      { text: "添加好友" },
-      { text: "申请入群" },
-      { text: "创建群组" }
-    ];
+    const actions: Array<Actions> = [{ text: "添加好友" }, { text: "设置" }];
     const onSelect = (action: Actions) => {
-      console.log(action.text);
+      console.log(action);
+      route.push("/setting");
     };
 
     onMounted(() => {
-      store.state.IM.connect
-        .getSessionList()
-        .then((res: EasemobChat.AsyncResult<ChannelInfo>) => {
-          res.data?.channel_infos.forEach((item) => {
-            item.chatType =
-              item.meta.to.indexOf(GROUP_SESSION) > -1
-                ? CHAT_TYPE.groupChat
-                : CHAT_TYPE.singleChat;
-          });
-          chatList.value = res.data?.channel_infos || [];
+      store.state.IM.connect.getSessionList().then((res) => {
+        let dt = (res.data?.channel_infos || []) as ChatItemInfo[];
+        dt.forEach((item) => {
+          item.chatType =
+            item.meta.to.indexOf(GROUP_SESSION) > -1
+              ? CHAT_TYPE.groupChat
+              : CHAT_TYPE.singleChat;
         });
+        chatList.value = dt;
+      });
     });
 
     return {
@@ -102,6 +99,8 @@ export default class Home extends Vue {
 
 <style scoped>
 .userListWrap {
-  padding: 3vw;
+  height: calc(100vh - 125px);
+  overflow: scroll;
+  padding: 12px 3vw;
 }
 </style>
