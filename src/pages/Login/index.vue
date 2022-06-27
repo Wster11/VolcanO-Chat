@@ -41,7 +41,7 @@ import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { ERROR_CODE } from "@/const/errorCode";
-import { EasemobChat } from "easemob-websdk";
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
 
 interface LoginFormParams {
   user: string;
@@ -77,7 +77,7 @@ export default class Login extends Vue {
         .open(opt)
         .then(() => {
           window.localStorage.setItem("uid", username.value);
-          router.push("/chat/to/singleChat/sttest");
+          router.push("/chat/to/singleChat/stwang");
         })
         .catch((e: EasemobChat.ErrorEvent) => {
           if (e.message === ERROR_CODE.loginFailed) {
@@ -97,7 +97,7 @@ export default class Login extends Vue {
     onMounted(() => {
       login({
         user: "sttest",
-        pwd: 123456
+        pwd: "sttest"
       });
     });
 

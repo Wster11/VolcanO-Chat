@@ -1,5 +1,5 @@
 import { Module } from "vuex";
-import { EasemobChat } from "easemob-websdk";
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
 const im: Module<any, any> = {
   namespaced: true,
   state: {

@@ -1,4 +1,4 @@
-import websdk from "easemob-websdk";
+import websdk from "agora-chat-sdk";
 import { appKey } from "@/const/index";
 
 const conn = new websdk.connection({

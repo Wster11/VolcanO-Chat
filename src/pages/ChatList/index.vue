@@ -36,7 +36,7 @@ import { useStore } from "vuex";
 import { ref, onMounted } from "vue";
 import { NavBar, Icon, Popover, Empty } from "vant";
 import User from "@/components/user.vue";
-import { EasemobChat } from "easemob-websdk";
+import { EasemobChat } from "agora-chat-sdk/Easemob-chat";
 import { formatSessionListTo } from "@/utils/im";
 import { CHAT_TYPE, GROUP_SESSION } from "@/const";
 

@@ -1,4 +1,4 @@
-const appKey: string = "easemob-demo#easeim";
+const appKey: string = "easemob-demo#rpttest";
 
 const GROUP_SESSION = "conference"; // 会话列表群组标识
 
