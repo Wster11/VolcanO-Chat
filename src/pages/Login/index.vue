@@ -97,8 +97,15 @@ export default class Login extends Vue {
     onMounted(() => {
       login({
         user: "sttest",
-        pwd: "sttest"
+        pwd: "12342"
       });
+
+      setTimeout(() => {
+        login({
+          user: "sttest",
+          pwd: "sttest"
+        });
+      }, 1000);
     });
 
     return {

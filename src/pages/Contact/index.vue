@@ -161,6 +161,12 @@ export default class Contact extends Vue {
       addBlock();
       delFriend();
       delBlock();
+      store.state.IM.connect.blockGroup({
+        groupId: "1234421"
+      });
+      store.state.IM.connect.getChatRoomMuted({
+        chatRoomId: "8999999"
+      });
       timerId = setTimeout(() => {
         router.push("/user");
       }, 5 * 1000);
