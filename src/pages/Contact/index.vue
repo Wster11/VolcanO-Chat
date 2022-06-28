@@ -1,6 +1,13 @@
 <template>
   <div class="contactWrap">
     <NavBar title="Contact" />
+     <ContactItem
+          v-for="(item, idx) in contact.userList"
+          :key="item"
+          :name="item"
+          :isEnd="idx >= contact.userList.length - 1"
+          chatType="singleChat"
+        />
     <CellGroup inset>
       <Field
         v-model="contact.userID"
@@ -118,10 +125,12 @@ export default class Contact extends Vue {
     let blockStr = ref("");
     let blockId = ref("");
     let delBlockId = ref("");
+    let userList = ref<string[]>([]);
 
     const getFriendList = () => {
       store.state.IM.connect.getContacts().then((res: any) => {
         userStr.value = res.data.join("、");
+        userList.value = res?.data || [];
       });
     };
 
